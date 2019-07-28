@@ -1,0 +1,43 @@
+{
+    "greet": [
+        {
+            "patterns": [
+                "(.*)\\b(hi|hello|hey|hola)\\b(.*)"
+            ],
+            "slots": {
+                "greet_word": 2
+            }
+        }
+    ],
+    "whatup": [
+        {
+            "patterns": [
+                "(.*)\\b(how are you)\\b(.*)",
+                "(.*)\\b(what'?s up)\\b(.*)"
+            ],
+            "slots": {
+                "whatup_type": 2
+            }
+        }
+    ],
+    "user_feels_fine": [
+        {
+            "patterns": [
+                "(.*)\\b(good|nice|alright|ok|great|fine)\\b(.*)"
+            ],
+            "neg_patterns": [
+                "(.*)\\b(not?)\\b(.{,15})(good|nice|alright|ok|great)\\b(.*)"
+            ],
+            "slots": {}
+        }
+    ],
+    "user_feels_not_fine": [
+        {
+            "patterns": [
+                "(.*)\\b(not?)(.{,15})(good|nice|alright|ok|great)\\b(.*)",
+                "(.*)\\b(bad|crap|shit|poop|tired|sad|lonely|upset|depressed|melancholy)\\b(.*)"
+            ],
+            "slots": {}
+        }
+    ]
+}
