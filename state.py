@@ -1,8 +1,12 @@
 """ conversation state definition """
 import typing as ta
+import uuid
 from dataclasses import dataclass, field
 
 import marshmallow
+
+def generate_session_id():
+    return str(uuid.uuid4())
 
 @dataclass
 class Message:
@@ -12,6 +16,7 @@ class Message:
 @dataclass
 class ConversationState:
     log: ta.List[Message] = field(default_factory=list)
+    session_id: str = field(default_factory=generate_session_id)
 
     def log_message(self, speaker: str, text: str) -> None:
         self.log.append(Message(speaker=speaker, text=text))
@@ -32,6 +37,7 @@ class MessageSchema(marshmallow.Schema):
 
 class ConversationStateSchema(marshmallow.Schema):
     log = marshmallow.fields.Nested(MessageSchema, many=True)
+    session_id = marshmallow.fields.String()
 
     @marshmallow.post_load
     def make_conv_state(self, data, **kwargs):
