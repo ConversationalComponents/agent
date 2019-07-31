@@ -1,7 +1,5 @@
 import requests
-from functools import lru_cache
 
-@lru_cache(maxsize=10000)
 def coco_exchange(component_id, session_id, **kwargs):
     """
     calls coco and try to maintain similar api.
@@ -42,7 +40,8 @@ class CocoPolicy:
                 self.component_id,
                 state.session_id,
                 user_input=state.get_last_user_input().text,
-                log_len=len(state.log)
+                log_len=len(state.log),
+                director_log=state.director_log
             )
             component_done = coco_data.get("component_done")
             component_failed = coco_data.get("component_failed")

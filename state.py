@@ -18,6 +18,8 @@ class ConversationState:
     log: ta.List[Message] = field(default_factory=list)
     session_id: str = field(default_factory=generate_session_id)
 
+    director_log: bool = True
+
     def log_message(self, speaker: str, text: str) -> None:
         self.log.append(Message(speaker=speaker, text=text))
 
