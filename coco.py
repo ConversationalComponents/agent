@@ -1,6 +1,17 @@
+from dataclasses import dataclass
 import requests
 
-def coco_exchange(component_id, session_id, **kwargs):
+@dataclass
+class CoCoResponse:
+    response: str
+    component_done: bool
+    updated_context: dict
+    confidence: float
+    idontknow: bool
+    raw_resp: dict
+
+def coco_exchange(component_id, session_id,
+                  user_input=None, **kwargs) -> CoCoResponse:
     """
     calls coco and try to maintain similar api.
     available optional kwargs are:
@@ -22,11 +33,22 @@ def coco_exchange(component_id, session_id, **kwargs):
         }
         dict -- response from coco
     """
-    return requests.post(
+    payload = kwargs
+    if user_input:
+        payload = {**{"user_input": user_input}, **kwargs}
+    coco_resp = requests.post(
         "https://app.coco.imperson.com/api/exchange/"
         f"{component_id}/{session_id}",
-        json=kwargs,
+        json=payload,
     ).json()
+    return CoCoResponse(**coco_resp, raw_resp=coco_resp)
+
+class ConvComp:
+    def __init__(self, component_id):
+        self.component_id = component_id
+
+    def __call__(self, session_id, user_input=None, **kwargs):
+        return coco_exchange(self.component_id, session_id, user_input, **kwargs)
 
 class CocoPolicy:
     def __init__(self, component_id):
@@ -43,6 +65,6 @@ class CocoPolicy:
                 log_len=len(state.log),
                 director_log=state.director_log
             )
-            component_done = coco_data.get("component_done")
-            component_failed = coco_data.get("component_failed")
-            yield coco_data.get("response", "")
+            component_done = coco_data.component_done
+            component_failed = coco_data.raw_resp.get("component_failed", False)
+            yield coco_data.response
