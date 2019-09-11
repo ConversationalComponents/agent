@@ -8,7 +8,7 @@ Try puppet if you want to make your chatbot modular using composable components.
 '''
 
 setup(name='coco-puppet',
-      version='0.0.2',
+      version='0.0.3',
       description='Modular composable chatbot development',
       long_description=long_description,
       author='Chen Buskilla',
@@ -16,7 +16,9 @@ setup(name='coco-puppet',
       url='https://github.com/chenb67/puppet',
       license='GPLv3',
       install_requires=['marshmallow>=3.0.0',
-                        'requests'],
+                        'requests',
+                        'coco-sdk==0.0.1'
+      ],
       package_data={
           '': ["*.json"]
       },
