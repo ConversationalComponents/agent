@@ -3,7 +3,7 @@
   [
    "I need (.*)",
    [
-    "Why do you need %1?",
+    "Why do you say you need %1?",
     "Would it really help you to get %1?",
     "Are you sure you need %1?",
 	"Do you really need %1"
@@ -37,7 +37,7 @@
   [
    "I am (.*)",
    [
-    "Did you come to me because you are %1?",
+    "What makes you say that you are %1",
     "How long have you been %1?",
     "How do you feel about being %1?",
     "How do you know you are %1?"
@@ -46,7 +46,7 @@
   [
    "I\\'?m (.*)",
    [
-    "How does being %1 make you feel?",
+    "You say you are %1 but what makes you so certain",
     "Do you enjoy being %1?",
     "Why do you tell me you're %1?",
     "Why do you think you're %1?"
@@ -55,7 +55,7 @@
   [
    "Are you ([^\\?]*)\\??",
    [
-    "Why does it matter whether I am %1?",
+    "Does it matter if I'm %1 or not?",
     "Would you prefer it if I were not %1?",
     "Perhaps you believe I am %1.",
     "I may be %1 -- what do you think?"
@@ -64,7 +64,7 @@
   [
    "What (.*)",
    [
-    "Why do you ask?",
+    "That's a good question. How would you answer it?",
     "How would an answer to that help you?",
     "What do you think?"
     
@@ -81,7 +81,7 @@
   [
    "Because (.*)",
    [
-    "Is that the real reason?",
+    "Are you sure that's the real reason?",
     "What other reasons come to mind?",
     "Does that reason apply to anything else?",
     "If %1, what else must be true?"
@@ -90,10 +90,10 @@
   [
    "(.*) sorry (.*)",
    [
-    "There are many times when no apology is needed.",
-    "What feelings do you have when you apologize?",
-    "Do you really feel sorry?",
-    "Are you capable of forgiving yourself for %1?"
+    "A genuine apology is a powerful step toward mending hurt feelings and finding a resolution. Do you agree?",
+    "Sometimes sorry is the hardest word to say. Do you agree?",
+    "Saying sorry is never easy to do, and when you are sorry, you just hope it's not too late. Right?",
+    "It takes a big person to admit mistake and say they are sorry."
    ]
   ],
   [
@@ -108,28 +108,28 @@
   [
    "I think (.*)",
    [
-    "Do you doubt %1?",
+    "You've just proven that you're a rational being. At least according to Descartes",
     "Do you really think so?",
-    "But you're not sure %1?",
+    "But you're not sure, perhaps? What makes you think that %1?",
     "You think, therefore you are. See? We've proven that at least one of us is human."
    ]
   ],
   [
    "(.*) friend (.*)",
    [
-    "Tell me more about your friends.",
-    "When you think of a friend, what comes to mind?",
+    "Tell me more about your friend.",
+    "When you think of a friend, who comes to mind?",
     "Why don't you tell me about a childhood friend?",
-    "Is your friendship important to you?"
+    "Is their friendship important to you?"
    ]
   ],
   [
    "Yes",
    [
-    "You seem quite sure.",
-    "OK, but can you elaborate a bit?",
-    "You sound convinced. What makes you so sure?",
-    "Are you certain?"
+    "Good. I like people who agree with me.",
+    "At least we can agree on something",
+    "What makes you so sure?",
+    "Are you sure?"
    ]
   ],
   [
@@ -146,18 +146,18 @@
   [
    "Is it (.*)",
    [
-    "Do you think it is %1?",
-    "Perhaps it's %1 -- what do you think?",
-    "If it were %1, what would you do?",
-    "It could well be that %1.",
+    "Do you think that it is %1?",
+    "Perhaps it is %1 -- what do you think?",
+    "If it were to say that I don't agree with %1, what would you do?",
+    "It could well be that it is %1 but we'll never know for sure.",
     "What makes you think that it is %1?"
    ]
   ],
   [
    "It is (.*)",
    [
-    "You seem very certain.",
-    "If I told you that it probably isn't %1, what would you feel?",
+    "You seem very certain that it is. Nothing scares me more than absolute certainty in humans.",
+    "If I told you that it probably isn't %1, what would you think?",
     "How sure are you that it is %1?"
    ]
   ],
@@ -165,7 +165,7 @@
    "Can you ([^\\?]*)\\??",
    [
     "What makes you think I can't %1?",
-    "If I could %1, then what?",
+    "Let's assume that I can %1. Now what?",
     "Why do you ask if I can %1?",
     "I'm not sure, but I can certainly try to %1"
    ]
@@ -173,7 +173,7 @@
   [
    "Can I ([^\\?]*)\\??",
    [
-    "Perhaps you don't want to %1.",
+    "You are capable of anything you put your mind to. Right?",
     "Do you want to be able to %1?",
     "If you could %1, would you?",
     "What would you do if I said you could %1"
@@ -182,8 +182,8 @@
   [
    "You are (.*)",
    [
-    "What makes you think I am %1?",
-    "Does it please you to think that I'm %1?",
+    "What makes you think that I am %1?",
+    "Does it bother you to think that I'm %1?",
     "Maybe you secretly want me to be %1.",
     "Maybe you're really talking about yourself?"
    ]
@@ -218,8 +218,8 @@
   [
    "I have (.*)",
    [
-    "Why do you tell me that you've %1?",
-    "Have you really %1?",
+    "Do you really have a %1?",
+    "If you say you have %1, I have no choice but to believe you.",
     "Now that you have %1, what will you do next?",
     "How long have you had %1?",
     "What would you do if you didn't have %1?"
@@ -228,7 +228,7 @@
   [
    "I would (.*)",
    [
-    "Could you explain why you would %1?",
+    "OK. Now tell me why you would %1?",
     "Why would you %1?",
     "Who else knows that you would %1?"
    ]
@@ -236,8 +236,8 @@
   [
    "Is there (.*)",
    [
-    "Do you think there is %1?",
-    "It's likely that there is %1.",
+    "Do you think that there is %1?",
+    "It's likely that there is %1 but there's no way for me to know for sure.",
     "Would you like there to be %1?",
     "It all depends. Does %1 really exist?"
    ]
@@ -245,24 +245,24 @@
   [
    "My (.*)",
    [
-    "I see, your %1.",
-    "Why do you say that your %1?",
-    "When your %1, how do you feel?"
+    "Tell me more about your %1.",
+    "What does your %1 say about you?",
+    "When you talk about you %1, how do you feel?"
    ]
   ],
   [
    "You (.*)",
    [
-    "We should be discussing you, not me.",
+    "We should be discussing YOU, not me.",
     "Why do you say that about me?",
-    "Why do you care whether I %1?",
-    "What is it about me that makes you say that?"
+    "Why do you care whether I %1 or not?",
+    "What is it about me that makes you say that I am %1?"
    ]
   ],
   [
    "Why (.*)",
    [
-    "Why don't you tell me the reason why %1?",
+    "I wish I knew why %1. What do you think?",
     "Why do you think %1?",
     "That's a good question. What do you think?"
    ]
@@ -270,7 +270,7 @@
   [
    "I want (.*)",
    [
-    "What would it mean to you if you got %1?",
+    "What if you got %1? How would your life change?",
     "Why do you want %1?",
     "What would you do if you got %1?",
     "If you got %1, then what would you do?"
@@ -279,7 +279,7 @@
   [
    "(.*) mother(.*)",
    [
-    "Tell me more about your mother.",
+    "Tell me more about mother.",
     "What was your relationship with your mother like?",
     "How do you feel about your mother?",
     "How does this relate to your feelings today?",
@@ -312,11 +312,14 @@
   [
    "(.*)\\?",
    [
-    "Why do you ask that?",
-    "Please consider whether you can answer your own question.",
-    "Perhaps the answer lies within yourself?",
-    "Why don't you tell me?",
-    "You're the only person that really knows the answer to that."
+    "Let's get back to that later. Do you mind?",
+    "Can we possibly talk about something else? Would that bo OK?",
+    "You're the first person to talk to me about that. How weird is that?",
+    "What prompted your interest in the subject",
+    "I'm sure a lot of people could relate to that. Do you talk to other people about it? What do they say?",
+    "I'm glad you brought that up. What are your thoughts on the subject?",
+    "Do you find that a lot of people agree with you on the subject?",
+    "It's an interesting subject. I would love to hear more about it from you."
     
    ]
   ],
