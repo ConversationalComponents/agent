@@ -1,44 +1,26 @@
 """ conversation state definition """
 import typing as ta
 import uuid
-from dataclasses import dataclass, field
-
-import marshmallow
 
 def generate_session_id():
     return str(uuid.uuid4())
 
-@dataclass
-class Message:
-    text: str
-    speaker: str
+class ConversationState(object):
+    def __init__(self, output_callback, input_callback):
+        self.input_callback = input_callback
+        self.output_callback = output_callback
+        self.session_id = generate_session_id()
+    
+    async def say(self, text):
+        self.output_callback(text)
+    
+    async def user_input(self):
+        return self.input_callback()
+    
+    async def out_of_context(self):
+        pass
 
-@dataclass
-class ConversationState:
-    log: ta.List[Message] = field(default_factory=list)
-    session_id: str = field(default_factory=generate_session_id)
-
-    def log_message(self, speaker: str, text: str) -> None:
-        self.log.append(Message(speaker=speaker, text=text))
-
-    def get_last_user_input(self) -> Message:
-        for msg in reversed(self.log):
-            if msg.speaker == "user":
-                return msg
-        return None
-
-class MessageSchema(marshmallow.Schema):
-    text = marshmallow.fields.String()
-    speaker = marshmallow.fields.String()
-
-    @marshmallow.post_load
-    def make_exchange(self, data, **kwargs):
-        return Message(**data)
-
-class ConversationStateSchema(marshmallow.Schema):
-    log = marshmallow.fields.Nested(MessageSchema, many=True)
-    session_id = marshmallow.fields.String()
-
-    @marshmallow.post_load
-    def make_conv_state(self, data, **kwargs):
-        return ConversationState(**data)
+class TerminationState(object):
+    def __init__(self, success=True):
+        self.success = success
+        self.failure = not success

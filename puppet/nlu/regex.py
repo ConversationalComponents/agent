@@ -1,8 +1,12 @@
 import re
 
-from .interpreter import Interepreter
+class ExampleIntent:
+    def __init__(self, example):
+        self.example = example
+    def __call__(self, user_input):
+        return self.example in user_input
 
-class RegexInterpreter(Interepreter):
+class RegexInterpreter():
     def __init__(self, patterns):
         self.patterns = patterns
 
@@ -28,6 +32,3 @@ class RegexInterpreter(Interepreter):
                         }
                         break
         return selected_hypotheses
-
-    def load():
-        pass
