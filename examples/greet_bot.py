@@ -1,8 +1,5 @@
-import asyncio
-import puppet
-
-from puppet import ConversationState
-from puppet.helpers import pick_first_match
+from puppet.templates import pick_first_match
+from puppet import coco
 
 class ExampleIntent:
     def __init__(self, example):
@@ -14,8 +11,15 @@ intent_no = ExampleIntent("no")
 intent_yes = ExampleIntent("yes")
 
 async def sample_bot(state):
-    await state.say("Welcome")
+    await state.say("Welcome to sample bot")
     user_input = await state.user_input()
+    await coco(state, "namer_vp3", user_input)
+    await coco(state, "register_vp3")
+    await help_line(state)
+    await lobby(state)
+
+async def help_line(state):
+    user_input = state.last_user_input()
     await pick_first_match(
         user_input,
         {
@@ -23,7 +27,6 @@ async def sample_bot(state):
         },
         (state.say, "How can I help?")
     )
-    await lobby(state)
 
 async def lobby(state):
     while True:
@@ -59,46 +62,9 @@ async def drink_comp(state):
         },
         (state.say, "I don't have that")
     )
-    
 
-async def get_first_name(state: ConversationState, user_input):
-    if not user_input:
-        user_input = await state.user_input()
-    if "chen" in user_input:
-        return
-    await state.say("will you please tell me your first name?")
-    
-async def get_last_name(state: ConversationState, user_input):
-    if not user_input:
-        user_input = await state.user_input()
-    if "buskilla" in user_input:
-        return
-    await state.say("will you please tell me your last name?")
-    
-async def namer(state: ConversationState):
-    user_input = await state.user_input()
-    if "chen" in user_input and "buskilla" in user_input:
-        return
-    elif "chen" in user_input:
-        return await get_last_name(state, user_input)
-    elif "buskilla" in user_input:
-        return await get_first_name(state, user_input)
-    else:
-        await state.say("will you please tell me your name?")
-        user_input = await state.user_input()
-        await get_first_name(state, user_input)
-        await get_last_name(state, user_input)
-        return
-
-async def greet(state: ConversationState):
-    await state.say("Welcome")
-    user_input = await state.user_input()
-    await state.out_of_context()
-    if intent_hi(user_input):
-        await state.say("Hello, How can I help?")
-    else:
-        await state.say("How can I help?")
-    return "component_done"
-
-s = puppet.ConversationState(print, input)
-asyncio.run(sample_bot(s))
+if __name__ == "__main__":
+    import asyncio
+    from puppet import generate_console_state
+    s = generate_console_state()
+    asyncio.run(sample_bot(s))
