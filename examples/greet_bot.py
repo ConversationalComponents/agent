@@ -1,5 +1,6 @@
 from puppet.templates import pick_first_match
 from puppet import coco
+from puppet.state import OutOfContext
 
 class ExampleIntent:
     def __init__(self, example):
@@ -13,12 +14,17 @@ intent_yes = ExampleIntent("yes")
 async def sample_bot(state):
     await state.say("Welcome to sample bot")
     user_input = await state.user_input()
-    await coco(state, "namer_vp3", user_input)
-    await coco(state, "register_vp3")
-    await help_line(state)
-    await lobby(state)
+    with OutOfContext(state, fallback):
+        await coco(state, "namer_vp3", user_input)
+        await coco(state, "register_vp3")
+        await help_line(state)
+        await lobby(state)
+
+async def fallback(state):
+    await state.say("what?")
 
 async def help_line(state):
+    await state.out_of_context()
     user_input = state.last_user_input()
     await pick_first_match(
         user_input,
@@ -65,6 +71,6 @@ async def drink_comp(state):
 
 if __name__ == "__main__":
     import asyncio
-    from puppet import generate_console_state
-    s = generate_console_state()
-    asyncio.run(sample_bot(s))
+    from puppet.shell import bot_runner
+    
+    asyncio.run(bot_runner(sample_bot))

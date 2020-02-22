@@ -1,3 +1,3 @@
-from .state import ConversationState, generate_console_state
+from .state import ConversationState
 
 from .coco import coco
