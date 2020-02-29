@@ -15,14 +15,13 @@ async def sample_bot(state):
     with OutOfContext(state, eliza_fallback):
         await coco(state, "namer_vp3", user_input)
         #await coco(state, "register_vp3")
-        await help_line(state)
+        await help_line(state, user_input)
         await lobby(state)
 
-async def fallback(state):
+async def fallback(state, user_input):
     await state.say("what?")
 
-async def help_line(state):
-    user_input = state.last_user_input()
+async def help_line(state, user_input):
     await pick_first_match(
         user_input,
         {
@@ -40,7 +39,7 @@ async def lobby(state):
                 RegexIntent(r"(.*)\b(pet)\b(.*)"): (coco, state, "users_pet_vp3", user_input),
                 RegexIntent(r"(.*)\b(hobby)\b(.*)"): (coco, state, "user_hobby_vp3", user_input),
             },
-            (state.out_of_context,)
+            (state.out_of_context, user_input)
         )
 
 if __name__ == "__main__":

@@ -29,14 +29,13 @@ def get_eliza_response(user_input):
             return selected_response
 
 
-async def eliza_fallback(state):
-    user_input = state.last_user_input()
+async def eliza_fallback(state, user_input):
     await state.say(get_eliza_response(user_input))
 
 
 ELIZA_PATTERNS = [
     [
-        "I need (.*)",
+        r"I need\b(.*)",
         [
             "Why do you say you need %1?",
             "Would it really help you to get %1?",
@@ -45,7 +44,7 @@ ELIZA_PATTERNS = [
         ],
     ],
     [
-        "Why don\\'?t you ([^\\?]*)\\??",
+        r"Why don\'?t you ([^\?]*)\??",
         [
             "Do you really think I don't %1?",
             "Maybe one day I will %1.",
@@ -53,7 +52,7 @@ ELIZA_PATTERNS = [
         ],
     ],
     [
-        "Why can\\'?t I ([^\\?]*)\\??",
+        r"Why can\'?t I ([^\?]*)\??",
         [
             "Do you think you should be able to %1?",
             "If you could %1, what would you do?",
@@ -62,7 +61,7 @@ ELIZA_PATTERNS = [
         ],
     ],
     [
-        "I can\\'?t (.*)",
+        r"I can\'?t (.*)",
         [
             "How do you know you can't %1?",
             "Perhaps you could %1 if you tried.",
@@ -70,7 +69,7 @@ ELIZA_PATTERNS = [
         ],
     ],
     [
-        "I am (.*)",
+        r"I am (.*)",
         [
             "What makes you say that you are %1",
             "How long have you been %1?",
@@ -79,7 +78,7 @@ ELIZA_PATTERNS = [
         ],
     ],
     [
-        "I\\'?m (.*)",
+        r"I\'?m (.*)",
         [
             "You say you are %1 but what makes you so certain",
             "Do you enjoy being %1?",
@@ -88,7 +87,7 @@ ELIZA_PATTERNS = [
         ],
     ],
     [
-        "Are you ([^\\?]*)\\??",
+        r"Are you ([^\?]*)\??",
         [
             "Does it matter if I'm %1 or not?",
             "Would you prefer it if I were not %1?",
@@ -97,7 +96,7 @@ ELIZA_PATTERNS = [
         ],
     ],
     [
-        "What (.*)",
+        r"What (.*)",
         [
             "That's a good question. How would you answer it?",
             "How would an answer to that help you?",
@@ -105,7 +104,7 @@ ELIZA_PATTERNS = [
         ],
     ],
     [
-        "How (.*)",
+        r"How (.*)",
         [
             "How do you suppose?",
             "Perhaps you can answer your own question.",
@@ -113,7 +112,7 @@ ELIZA_PATTERNS = [
         ],
     ],
     [
-        "Because (.*)",
+        r"Because (.*)",
         [
             "Are you sure that's the real reason?",
             "What other reasons come to mind?",
@@ -122,7 +121,7 @@ ELIZA_PATTERNS = [
         ],
     ],
     [
-        "(.*) sorry (.*)",
+        r"(.*)\bsorry\b(.*)",
         [
             "A genuine apology is a powerful step toward mending hurt feelings and finding a resolution. Do you agree?",
             "Sometimes sorry is the hardest word to say. Do you agree?",
@@ -131,7 +130,7 @@ ELIZA_PATTERNS = [
         ],
     ],
     [
-        "Hello(.*)",
+        r"Hello\b(.*)",
         [
             "Hello... I'm glad you could drop by today.",
             "Hi there... how are you today?",
@@ -140,7 +139,7 @@ ELIZA_PATTERNS = [
         ],
     ],
     [
-        "I think (.*)",
+        r"I think (.*)",
         [
             "You've just proven that you're a rational being. At least according to Descartes",
             "Do you really think so?",
@@ -149,7 +148,7 @@ ELIZA_PATTERNS = [
         ],
     ],
     [
-        "(.*) friend (.*)",
+        r"(.*)\bfriend\b(.*)",
         [
             "Tell me more about your friend.",
             "When you think of a friend, who comes to mind?",
@@ -158,7 +157,7 @@ ELIZA_PATTERNS = [
         ],
     ],
     [
-        "Yes",
+        r"Yes",
         [
             "Good. I like people who agree with me.",
             "At least we can agree on something",
@@ -167,7 +166,7 @@ ELIZA_PATTERNS = [
         ],
     ],
     [
-        "(.*) computer(.*)",
+        r"(.*)\bcomputer\b(.*)",
         [
             "Are you really talking about me?",
             "Does it seem strange to talk to a computer?",
@@ -178,7 +177,7 @@ ELIZA_PATTERNS = [
         ],
     ],
     [
-        "Is it (.*)",
+        r"Is it (.*)",
         [
             "Do you think that it is %1?",
             "Perhaps it is %1 -- what do you think?",
@@ -188,7 +187,7 @@ ELIZA_PATTERNS = [
         ],
     ],
     [
-        "It is (.*)",
+        r"It is (.*)",
         [
             "You seem very certain that it is. Nothing scares me more than absolute certainty in humans.",
             "If I told you that it probably isn't %1, what would you think?",
@@ -196,7 +195,7 @@ ELIZA_PATTERNS = [
         ],
     ],
     [
-        "Can you ([^\\?]*)\\??",
+        r"Can you ([^\?]*)\??",
         [
             "What makes you think I can't %1?",
             "Let's assume that I can %1. Now what?",
@@ -205,7 +204,7 @@ ELIZA_PATTERNS = [
         ],
     ],
     [
-        "Can I ([^\\?]*)\\??",
+        r"Can I ([^\?]*)\??",
         [
             "You are capable of anything you put your mind to. Right?",
             "Do you want to be able to %1?",
@@ -214,7 +213,7 @@ ELIZA_PATTERNS = [
         ],
     ],
     [
-        "You are (.*)",
+        r"You are (.*)",
         [
             "What makes you think that I am %1?",
             "Does it bother you to think that I'm %1?",
@@ -223,7 +222,7 @@ ELIZA_PATTERNS = [
         ],
     ],
     [
-        "You\\'?re (.*)",
+        r"You\'?re (.*)",
         [
             "Why do you say I am %1?",
             "Why do you think I am %1?",
@@ -231,7 +230,7 @@ ELIZA_PATTERNS = [
         ],
     ],
     [
-        "I don\\'?t (.*)",
+        r"I don\'?t (.*)",
         [
             "Don't you really %1?",
             "Why don't you %1?",
@@ -240,7 +239,7 @@ ELIZA_PATTERNS = [
         ],
     ],
     [
-        "I feel (.*)",
+        r"I feel (.*)",
         [
             "Good, tell me more about these feelings.",
             "Do you often feel %1?",
@@ -250,7 +249,7 @@ ELIZA_PATTERNS = [
         ],
     ],
     [
-        "I have (.*)",
+        r"I have (.*)",
         [
             "Do you really have a %1?",
             "If you say you have %1, I have no choice but to believe you.",
@@ -260,7 +259,7 @@ ELIZA_PATTERNS = [
         ],
     ],
     [
-        "I would (.*)",
+        r"I would (.*)",
         [
             "OK. Now tell me why you would %1?",
             "Why would you %1?",
@@ -268,7 +267,7 @@ ELIZA_PATTERNS = [
         ],
     ],
     [
-        "Is there (.*)",
+        r"Is there (.*)",
         [
             "Do you think that there is %1?",
             "It's likely that there is %1 but there's no way for me to know for sure.",
@@ -277,7 +276,7 @@ ELIZA_PATTERNS = [
         ],
     ],
     [
-        "My (.*)",
+        r"My (.*)",
         [
             "Tell me more about your %1.",
             "What does your %1 say about you?",
@@ -285,7 +284,7 @@ ELIZA_PATTERNS = [
         ],
     ],
     [
-        "You (.*)",
+        r"You (.*)",
         [
             "We should be discussing YOU, not me.",
             "Why do you say that about me?",
@@ -294,7 +293,7 @@ ELIZA_PATTERNS = [
         ],
     ],
     [
-        "Why (.*)",
+        r"Why (.*)",
         [
             "I wish I knew why %1. What do you think?",
             "Why do you think %1?",
@@ -302,7 +301,7 @@ ELIZA_PATTERNS = [
         ],
     ],
     [
-        "I want (.*)",
+        r"I want (.*)",
         [
             "What if you got %1? How would your life change?",
             "Why do you want %1?",
@@ -311,7 +310,7 @@ ELIZA_PATTERNS = [
         ],
     ],
     [
-        "(.*) mother(.*)",
+        r"(.*)\bmother\b(.*)",
         [
             "Tell me more about mother.",
             "What was your relationship with your mother like?",
@@ -322,7 +321,7 @@ ELIZA_PATTERNS = [
         ],
     ],
     [
-        "(.*) father(.*)",
+        r"(.*)\bfather\b(.*)",
         [
             "Tell me more about your father.",
             "How did your father make you feel?",
@@ -333,7 +332,7 @@ ELIZA_PATTERNS = [
         ],
     ],
     [
-        "(.*) child(.*)",
+        r"(.*)\bchild\b(.*)",
         [
             "Did you have close friends as a child?",
             "What is your favorite childhood memory?",
@@ -344,7 +343,7 @@ ELIZA_PATTERNS = [
         ],
     ],
     [
-        "(.*)\\?",
+        r"(.*)\?",
         [
             "Let's get back to that later. Do you mind?",
             "Can we possibly talk about something else? Would that bo OK?",
@@ -357,16 +356,7 @@ ELIZA_PATTERNS = [
         ],
     ],
     [
-        "quit",
-        [
-            "Thank you for talking with me.",
-            "Good-bye.",
-            "Thank you, that will be $150.  Have a good day!",
-            "Quitters never win. Just saying.",
-        ],
-    ],
-    [
-        "(.*)",
+        r"(.*)",
         [
             "Please tell me more.",
             "Let's change focus a bit... Tell me about your family.",

@@ -54,9 +54,9 @@ class ConversationState(object):
     def pop_out_of_context_handler(self):
         self.out_of_context_handlers.pop()
 
-    async def out_of_context(self, *args, **kwargs):
+    async def out_of_context(self, user_input, *args, **kwargs):
         if len(self.out_of_context_handlers) > 0:
-            await self.out_of_context_handlers[-1](self, *args, **kwargs)
+            await self.out_of_context_handlers[-1](self, user_input, *args, **kwargs)
 
 class OutOfContext(object):
     def __init__(self, state, handler):
