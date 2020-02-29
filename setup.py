@@ -8,17 +8,14 @@ Try puppet if you want to make your chatbot modular using composable components.
 '''
 
 setup(name='coco-puppet',
-      version='0.0.6',
+      version='0.0.7',
       description='Modular composable chatbot development',
       long_description=long_description,
       author='Chen Buskilla',
       author_email='chen@buskilla.com',
       url='https://github.com/chenb67/puppet',
       license='GPLv3',
-      install_requires=[],
-      package_data={
-          '': ["*.json"]
-      },
+      install_requires=["aioconsole"],
       classifiers=[
           'Development Status :: 2 - Pre-Alpha',
           'Intended Audience :: Developers',
