@@ -35,7 +35,7 @@ async def eliza_fallback(state, user_input):
 
 ELIZA_PATTERNS = [
     [
-        r"I need\b(.*)",
+        r"I need (.*)",
         [
             "Why do you say you need %1?",
             "Would it really help you to get %1?",
@@ -130,7 +130,7 @@ ELIZA_PATTERNS = [
         ],
     ],
     [
-        r"Hello\b(.*)",
+        r"(Hello|hi)\b(.*)",
         [
             "Hello... I'm glad you could drop by today.",
             "Hi there... how are you today?",

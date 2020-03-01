@@ -9,8 +9,8 @@ async def input_loop(s):
 async def console_output(text):
     print(f"Bot: {text}")
 
-async def bot_runner(bot):
+async def bot_runner(bot, *args):
     s = ConversationState(console_output)
     await asyncio.gather(
         input_loop(s), 
-        bot(s))
+        bot(s, *args))
