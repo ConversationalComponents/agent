@@ -1,6 +1,6 @@
 from puppet.templates import pick_first_match
 from puppet import coco
-from puppet.state import OutOfContext
+from puppet.state import OutOfContext, ConversationState
 from puppet.nlu.regex import RegexIntent
 
 from puppet.std.eliza import eliza_fallback
@@ -9,13 +9,11 @@ intent_hi = RegexIntent(r"(.*)\b(hi|hello|hey)\b(.*)")
 intent_no = RegexIntent(r"(.*)\b(no|nope|never)\b(.*)")
 intent_yes = RegexIntent(r"(.*)\b(yes|ok|sure|yup|yea)\b(.*)")
 
-async def sample_bot(state):
+async def sample_bot(state: ConversationState):
     await state.say("Welcome to sample bot")
-    user_input = await state.user_input()
     with OutOfContext(state, eliza_fallback):
-        await coco(state, "namer_vp3", user_input)
-        #await coco(state, "register_vp3")
-        await help_line(state, user_input)
+        await coco(state, "namer_vp3")
+        await help_line(state, state.last_user_input())
         await lobby(state)
 
 async def fallback(state, user_input):
