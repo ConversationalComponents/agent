@@ -57,7 +57,7 @@ async def exchange(component_id: str, session_id: str,
     payload = kwargs
     if user_input:
         payload = {**{"user_input": user_input}, **kwargs}
-    coco_resp = httpx.post(
+    coco_resp = await httpx.post(
         "https://marketplace.conversationalcomponents.com/api/exchange/"
         f"{component_id}/{session_id}",
         json=payload,
@@ -106,6 +106,8 @@ class ComponentSession:
 
 async def coco(state, component_id, user_input=None):
     component_session = ComponentSession(component_id, state.session_id)
+    if not user_input:
+        user_input = await state.user_input()
     component_response = await component_session(user_input)
     while not component_response.component_done:
         await state.say(component_response.response)
