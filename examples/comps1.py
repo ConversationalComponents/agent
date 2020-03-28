@@ -10,11 +10,12 @@ intent_no = RegexIntent(r"(.*)\b(no|nope|never)\b(.*)")
 intent_yes = RegexIntent(r"(.*)\b(yes|ok|sure|yup|yea)\b(.*)")
 
 async def sample_bot(state: ConversationState):
-    await state.say("Welcome to sample bot")
+    await state.say("Hi")
     with OutOfContext(state, eliza_fallback):
         await coco(state, "namer_vp3")
         await help_line(state, state.last_user_input())
-        await lobby(state)
+        while True:
+            await lobby(state)
 
 async def fallback(state, user_input):
     await state.say("what?")
@@ -29,16 +30,15 @@ async def help_line(state, user_input):
     )
 
 async def lobby(state):
-    while True:
-        user_input = await state.user_input()
-        await pick_first_match(
-            user_input,
-            {
-                RegexIntent(r"(.*)\b(pet)\b(.*)"): (coco, state, "users_pet_vp3", user_input),
-                RegexIntent(r"(.*)\b(hobby)\b(.*)"): (coco, state, "user_hobby_vp3", user_input),
-            },
-            (state.out_of_context, user_input)
-        )
+    user_input = await state.user_input()
+    await pick_first_match(
+        user_input,
+        {
+            RegexIntent(r"(.*)\b(pet)\b(.*)"): (coco, state, "users_pet_vp3", user_input),
+            RegexIntent(r"(.*)\b(hobby)\b(.*)"): (coco, state, "user_hobby_vp3", user_input),
+        },
+        (state.out_of_context, user_input)
+    )
 
 if __name__ == "__main__":
     import asyncio
