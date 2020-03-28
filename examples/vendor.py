@@ -36,13 +36,13 @@ async def exchange(request, component_id, session_id):
 
     sc = puppet_session_mgr.get_session(session_id, bp)
 
-    await sc.s.put_user_input(json_data.get("user_input", ""))
+    await sc.conv_state.put_user_input(json_data.get("user_input", ""))
     
     await asyncio.wait(
         [
-            sc.s.bot_listen(), 
+            sc.conv_state.bot_listen(),
             sc.bot_task
-            ], 
+            ],
         return_when=asyncio.FIRST_COMPLETED)
     
     eresp = {
@@ -60,4 +60,4 @@ app.add_route(exchange, "/api/exchange/<component_id>/<session_id>", methods=["P
 app.add_route(exchange, "/exchange/<component_id>/<session_id>", methods=["POST"])
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8083)
+    app.run(host="0.0.0.0", port=8080)
