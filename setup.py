@@ -10,7 +10,7 @@ def read(fname):
 long_description = read("README.md")
 
 setup(name='coco-puppet',
-      version='0.0.9',
+      version='0.0.10',
       description='Modular composable chatbot development',
       long_description=long_description,
       long_description_content_type='text/markdown',
@@ -24,7 +24,7 @@ setup(name='coco-puppet',
           ],
       extras_require={
           "discord": ["discord.py"],
-          "msbf": []
+          "msbf": ["botbuilder_core"]
       },
       classifiers=[
           'Development Status :: 2 - Pre-Alpha',
