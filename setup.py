@@ -10,7 +10,7 @@ def read(fname):
 long_description = read("README.md")
 
 setup(name='coco-puppet',
-      version='0.0.8',
+      version='0.0.9',
       description='Modular composable chatbot development',
       long_description=long_description,
       long_description_content_type='text/markdown',

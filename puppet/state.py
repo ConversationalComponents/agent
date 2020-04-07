@@ -8,8 +8,9 @@ def generate_session_id():
     return str(uuid.uuid4())
 
 class Entry:
-    def __init__(self, text: str):
+    def __init__(self, text: str = None, image_url: str = None):
         self.text = text
+        self.image_url = image_url
 
 class BotEntry(Entry):
     pass
@@ -26,14 +27,16 @@ class ConversationState(object):
         self._inputs_queue = None
         self._bot_wait_for_input_event = Event()
 
-    async def say(self, text: str):
+        self.memory = {}
+
+    async def say(self, text: str, image_url: str = None):
         """Utter text message
 
         Arguments:
             text {str} -- The text message
         """
-        self.log.append(BotEntry(text))
-        await self.output_callback(text)
+        self.log.append(BotEntry(text, image_url))
+        await self.output_callback(text, image_url)
 
     async def put_user_input(self, user_input: str):
         if not self._inputs_queue:

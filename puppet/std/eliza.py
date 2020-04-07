@@ -346,7 +346,7 @@ ELIZA_PATTERNS = [
         r"(.*)\?",
         [
             "Let's get back to that later. Do you mind?",
-            "Can we possibly talk about something else? Would that bo OK?",
+            "Can we possibly talk about something else? Would that be OK?",
             "You're the first person to talk to me about that. How weird is that?",
             "What prompted your interest in the subject",
             "I'm sure a lot of people could relate to that. Do you talk to other people about it? What do they say?",

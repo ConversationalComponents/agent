@@ -1,12 +1,11 @@
 import os
-import asyncio
 import sys
 import importlib
 
 import discord
 
 from discord.channel import DMChannel
-from discord import Message
+from discord import Message, Embed
 
 from .server import PuppetSessionsManager
 
@@ -27,6 +26,15 @@ client = discord.Client()
 async def on_ready():
     print('We have logged in as {0.user}'.format(client))
 
+class OutputCallback:
+    def __init__(self, channel) -> None:
+        self.channel = channel
+
+    async def __call__(self, text, image_url=None, *args, **kwargs):
+        embed = None
+        if image_url:
+            embed = Embed().set_image(url=image_url)
+        await self.channel.send(text, embed=embed)
 
 @client.event
 async def on_message(message: Message):
@@ -43,7 +51,11 @@ async def on_message(message: Message):
     else:
         target_channel = message.author
 
-    sc = sess_mgr.get_session(session_id, entry, target_channel.send)
+    output_callback = OutputCallback(target_channel)
+
+    sc = sess_mgr.get_session(session_id, entry, output_callback)
+
+    sc.conv_state.memory["user_id"] = "#".join((message.author.name, message.author.discriminator))
 
     await sc.conv_state.put_user_input(message.content)
 
