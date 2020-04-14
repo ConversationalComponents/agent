@@ -6,9 +6,9 @@ class BotSessionContainer:
     def __init__(self, bot_coro, async_output_callback=None):
         self.responses = []
         self.conv_state = ConversationState(async_output_callback or self.add_response)
-        self.bot_task = asyncio.create_task(bot_coro(self.conv_state))
+        self.bot_task: asyncio.Task = asyncio.create_task(bot_coro(self.conv_state))
 
-    async def add_response(self, text):
+    async def add_response(self, text, *args, **kwargs):
         self.responses.append(text)
 
     def collect_responses(self):
@@ -29,7 +29,7 @@ class PuppetSessionsManager:
 
     def get_session(self, session_id, bot, async_output_callback=None) -> BotSessionContainer:
         sc = self.sessions.get(session_id)
-        if not sc:
+        if not sc or sc.bot_task.exception:
             sc = BotSessionContainer(
                 self.session_cleanup_builder(bot, session_id),
                 async_output_callback=async_output_callback
