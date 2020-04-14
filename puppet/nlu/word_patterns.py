@@ -91,7 +91,7 @@ class S:
         )
 
     def __call__(self, user_input):
-        return bool(self.pattern.match(user_input))
+        return bool(self.pattern.fullmatch(user_input))
 
 
 class IntentBuilder:
