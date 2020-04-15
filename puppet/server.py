@@ -29,7 +29,7 @@ class PuppetSessionsManager:
 
     def get_session(self, session_id, bot, async_output_callback=None) -> BotSessionContainer:
         sc = self.sessions.get(session_id)
-        if not sc or sc.bot_task.exception:
+        if not sc or (sc.bot_task.done() and sc.bot_task.exception()):
             sc = BotSessionContainer(
                 self.session_cleanup_builder(bot, session_id),
                 async_output_callback=async_output_callback
