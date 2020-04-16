@@ -2,28 +2,28 @@
     Compile simple word patterns to regex
 
     Examples:
-    intent = IntentBuilder(
-        S("the", "boy", "ate", "an", "apple")
+    intent = Intent(
+        Pattern("the", "boy", "ate", "an", "apple")
     )
     intent("the boy ate an apple") -> True
     intent("the boy ate an orange") -> False
 
-    intent = IntentBuilder(
-        S("the", "boy", "ate", "an", NWords(min=1, max=1))
+    intent = Intent(
+        Pattern("the", "boy", "ate", "an", AnyWords(min=1, max=1))
     )
     intent("the boy ate an apple") -> True
     intent("the boy ate an orange") -> True
 
-    intent = IntentBuilder(
-        S("the", Word("boy", "girl"), "ate", "an", NWords(min=1, max=1))
+    intent = Intent(
+        Pattern("the", Words("boy", "girl"), "ate", "an", AnyWords(min=1, max=1))
     )
     intent("the boy ate an apple") -> True
     intent("the boy ate an orange") -> True
     intent("the girl ate an orange") -> True
     intent("the girl ate a banana") -> False
 
-    intent = IntentBuilder(
-        S("the", Word("boy", "girl"), "ate", WordP(r"an?"), NWords(min=1, max=1))
+    intent = Intent(
+        Pattern("the", ("boy", "girl"), "ate", WordsRegex(r"an?"), AnyWords(min=1, max=1))
     )
     intent("the boy ate an apple") -> True
     intent("the boy ate an orange") -> True
@@ -31,8 +31,8 @@
     intent("the girl ate a banana") -> True
     intent("a nice boy ate an apple") -> False
 
-    intent = IntentBuilder(
-        S(WC, Word("boy", "girl"), "ate", WordP(r"an?"), NWords(min=1, max=1))
+    intent = Intent(
+        Pattern(WILDCARD, Words("boy", "girl"), "ate", WordsRegex(r"an?"), AnyWords(min=1, max=1))
     )
     intent("a nice boy ate an apple") -> True
 
@@ -42,13 +42,19 @@ import abc
 import re
 
 
-class SentenceElement(abc.ABC):
+class PatternElement(abc.ABC):
+    """
+        Base class for element in pattern
+    """
     @abc.abstractmethod
     def regex_transformation(self):
         raise NotImplementedError
 
 
-class RegexPattern(SentenceElement):
+class RegexElement(PatternElement):
+    """
+        element for any regex in a word position
+    """
     def __init__(self, pattern):
         self.pattern = pattern
 
@@ -56,7 +62,10 @@ class RegexPattern(SentenceElement):
         return self.pattern
 
 
-class WordP(SentenceElement):
+class WordsRegex(PatternElement):
+    """
+        List of word regex patterns to match against a single word position
+    """
     def __init__(self, *patterns):
         self.word_list_tran = f"\\b({'|'.join(patterns)})\\b"
 
@@ -64,12 +73,18 @@ class WordP(SentenceElement):
         return self.word_list_tran
 
 
-class Word(WordP):
+class Words(WordsRegex):
+    """
+        List of words to match against a single word position
+    """
     def __init__(self, *words):
         self.word_list_tran = f"\\b({'|'.join(re.escape(w) for w in words)})\\b"
 
 
-class NWords(SentenceElement):
+class AnyWords(PatternElement):
+    """
+        Any word configurable with min, max
+    """
     def __init__(self, min="", max=""):
         self.pattern = "(\\s?\\b\\w+\\b\\s?){" + f"{str(min)},{str(max)}" + "}"
 
@@ -77,14 +92,25 @@ class NWords(SentenceElement):
         return self.pattern
 
 
-WC = RegexPattern(r"(.*)")
+WILDCARD = RegexElement(r"(.*)")
 
 
-class S:
-    def __init__(self, *elements: ta.Union[SentenceElement, str]):
-        elements_normalized = (
-            e if isinstance(e, SentenceElement) else Word(e) for e in elements
-        )
+class Pattern:
+    """
+    A class representing a single pattern for a Sentence/Utterance
+    pattern is built out of elements that match a single word in an utterance
+
+    """
+    def __init__(self, *elements: ta.Union[PatternElement, str, tuple]):
+        elements_normalized = []
+        for e in elements:
+            if isinstance(e, PatternElement):
+                elements_normalized.append(e)
+            elif isinstance(e, str):
+                elements_normalized.append(Words(e))
+            elif isinstance(e, tuple):
+                elements_normalized.append(Words(*e))
+
         self.pattern = re.compile(
             r"\s*".join(e.regex_transformation() for e in elements_normalized),
             re.IGNORECASE,
@@ -94,11 +120,14 @@ class S:
         return bool(self.pattern.fullmatch(user_input))
 
 
-class IntentBuilder:
+class Intent:
+    """
+    Intent reposesents a group of patterns to match against an utterance
+    """
     def __init__(
-        self, *sentence_patterns: S, preprocess_func: ta.Callable[[str], str] = None
+        self, *patterns: Pattern, preprocess_func: ta.Callable[[str], str] = None
     ) -> None:
-        self.sentence_patterns: ta.Tuple[S, ...] = sentence_patterns
+        self.patterns: ta.Tuple[Pattern, ...] = patterns
         if preprocess_func:
             self.preprocess_func = preprocess_func
         else:
@@ -106,7 +135,7 @@ class IntentBuilder:
 
     def __call__(self, user_input) -> bool:
         prepro_user_input = self.preprocess_func(user_input)
-        for s in self.sentence_patterns:
+        for s in self.patterns:
             if s(prepro_user_input):
                 return True
         return False
