@@ -3,6 +3,8 @@ import os
 from setuptools import setup
 from setuptools import find_packages
 
+PYPI_PACKAGE_VERSION = os.environ["PYPI_PACKAGE_VERSION"]
+
 def read(fname):
     with open(os.path.join(os.path.dirname(__file__), fname)) as f:
         return f.read()
@@ -10,7 +12,7 @@ def read(fname):
 long_description = read("README.md")
 
 setup(name='coco-puppet',
-      version='0.0.13',
+      version=PYPI_PACKAGE_VERSION,
       description='Modular composable chatbot development',
       long_description=long_description,
       long_description_content_type='text/markdown',
