@@ -108,7 +108,7 @@ class Pattern:
                 elements_normalized.append(e)
             elif isinstance(e, str):
                 elements_normalized.append(Words(e))
-            elif isinstance(e, tuple):
+            elif isinstance(e, (tuple, list, set)):
                 elements_normalized.append(Words(*e))
 
         self.pattern = re.compile(
