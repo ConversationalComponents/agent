@@ -1,4 +1,3 @@
-
 import os
 from setuptools import setup
 from setuptools import find_packages
@@ -26,7 +25,8 @@ setup(name='coco-puppet',
           ],
       extras_require={
           "discord": ["discord.py"],
-          "msbf": ["botbuilder_core"]
+          "msbf": ["botbuilder_core"],
+          "dsl": ["hy"]
       },
       classifiers=[
           'Development Status :: 2 - Pre-Alpha',
