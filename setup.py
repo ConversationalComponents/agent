@@ -2,7 +2,7 @@ import os
 from setuptools import setup
 from setuptools import find_packages
 
-PYPI_PACKAGE_VERSION = os.environ["PYPI_PACKAGE_VERSION"]
+PYPI_PACKAGE_VERSION = os.environ.get("PYPI_PACKAGE_VERSION", "dev")
 
 def read(fname):
     with open(os.path.join(os.path.dirname(__file__), fname)) as f:
@@ -21,12 +21,13 @@ setup(name='coco-puppet',
       license='GPLv3',
       install_requires=[
           "aioconsole",
-          "coco-sdk[async]>=0.0.6"
+          "coco-sdk[async]>=0.0.7"
           ],
       extras_require={
           "discord": ["discord.py"],
           "msbf": ["botbuilder_core"],
-          "dsl": ["hy"]
+          "dsl": ["hy"],
+          "vendor": ["sanic"]
       },
       classifiers=[
           'Development Status :: 2 - Pre-Alpha',
