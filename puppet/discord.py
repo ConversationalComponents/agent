@@ -22,9 +22,11 @@ sess_mgr = PuppetSessionsManager()
 
 client = discord.Client()
 
+
 @client.event
 async def on_ready():
-    print('We have logged in as {0.user}'.format(client))
+    print("We have logged in as {0.user}".format(client))
+
 
 class OutputCallback:
     def __init__(self, channel) -> None:
@@ -35,6 +37,7 @@ class OutputCallback:
         if image_url:
             embed = Embed().set_image(url=image_url)
         await self.channel.send(text, embed=embed)
+
 
 @client.event
 async def on_message(message: Message):
@@ -55,8 +58,11 @@ async def on_message(message: Message):
 
     sc = sess_mgr.get_session(session_id, entry, output_callback)
 
-    sc.conv_state.memory["user_id"] = "#".join((message.author.name, message.author.discriminator))
+    sc.conv_state.memory["user_id"] = "#".join(
+        (message.author.name, message.author.discriminator)
+    )
 
     await sc.conv_state.put_user_input(message.content)
+
 
 client.run(DISCORD_KEY)

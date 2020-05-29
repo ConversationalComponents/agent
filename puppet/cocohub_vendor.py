@@ -6,18 +6,23 @@ from sanic.response import json
 
 from puppet.server import PuppetSessionsManager
 
-class PuppetCoCoApp:
 
+class PuppetCoCoApp:
     def __init__(self) -> None:
         self.blueprints: dict = {}
         self.sanic_app = Sanic(__name__)
         self.puppet_session_mgr = PuppetSessionsManager()
-        self.sanic_app.add_route(self.exchange, "/api/exchange/<component_id>/<session_id>", methods=["POST"])
-        self.sanic_app.add_route(self.exchange, "/exchange/<component_id>/<session_id>", methods=["POST"])
+        self.sanic_app.add_route(
+            self.exchange, "/api/exchange/<component_id>/<session_id>", methods=["POST"]
+        )
+        self.sanic_app.add_route(
+            self.exchange, "/exchange/<component_id>/<session_id>", methods=["POST"]
+        )
 
     def blueprint(self, f):
         async def component(*args, **kwargs):
             return await f(*args, **kwargs)
+
         self.blueprints[f.__name__] = f
         return component
 
@@ -41,18 +46,16 @@ class PuppetCoCoApp:
         await sc.conv_state.put_user_input(json_data.get("user_input", ""))
 
         await asyncio.wait(
-            [
-                sc.conv_state.bot_listen(),
-                sc.bot_task
-                ],
-            return_when=asyncio.FIRST_COMPLETED)
+            [sc.conv_state.bot_listen(), sc.bot_task],
+            return_when=asyncio.FIRST_COMPLETED,
+        )
 
         eresp = {
             "response": sc.collect_responses(),
             "component_done": sc.bot_task.done(),
             "component_failed": False,
             "out_of_context": False,
-            "updated_context": {}
+            "updated_context": {},
         }
 
         eresp["response_time"] = time.perf_counter() - start_time

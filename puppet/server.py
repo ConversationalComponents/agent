@@ -2,6 +2,7 @@ import asyncio
 
 from .state import ConversationState
 
+
 class BotSessionContainer:
     def __init__(self, bot_coro, async_output_callback=None):
         self.responses = []
@@ -16,6 +17,7 @@ class BotSessionContainer:
         self.responses = []
         return response
 
+
 class PuppetSessionsManager:
     def __init__(self):
         self.sessions = {}
@@ -25,14 +27,17 @@ class PuppetSessionsManager:
             res = await bot(s)
             self.sessions.pop(session_id)
             return res
+
         return bot_coro
 
-    def get_session(self, session_id, bot, async_output_callback=None) -> BotSessionContainer:
+    def get_session(
+        self, session_id, bot, async_output_callback=None
+    ) -> BotSessionContainer:
         sc = self.sessions.get(session_id)
         if not sc or (sc.bot_task.done() and sc.bot_task.exception()):
             sc = BotSessionContainer(
                 self.session_cleanup_builder(bot, session_id),
-                async_output_callback=async_output_callback
-                )
+                async_output_callback=async_output_callback,
+            )
             self.sessions[session_id] = sc
         return sc

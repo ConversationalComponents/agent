@@ -1,5 +1,6 @@
 import re
 
+
 class RegexIntent:
     def __init__(self, *patterns):
         self.patterns = [re.compile(p, re.IGNORECASE) for p in patterns]
@@ -9,6 +10,7 @@ class RegexIntent:
             if p.match(user_input):
                 return True
         return False
+
 
 class RegexExtractor:
     def __init__(self, pattern, target_group) -> None:

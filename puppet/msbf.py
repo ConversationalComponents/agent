@@ -25,16 +25,20 @@ ADAPTER = BotFrameworkAdapter(SETTINGS)
 
 sess_mgr = PuppetSessionsManager()
 
+
 class OutputCallback:
     def __init__(self, turn_context) -> None:
         self.turn_context = turn_context
 
     async def __call__(self, text, image_url=None, *args, **kwargs):
         if image_url:
-            msg = MessageFactory.content_url(url=image_url, content_type="image/" + image_url[-3:], text=text)
+            msg = MessageFactory.content_url(
+                url=image_url, content_type="image/" + image_url[-3:], text=text
+            )
         else:
             msg = MessageFactory.text(text)
         await self.turn_context.send_activity(msg)
+
 
 class PuppetBot(ActivityHandler):
     async def on_message_activity(self, turn_context: TurnContext):
@@ -48,6 +52,7 @@ class PuppetBot(ActivityHandler):
         sc.conv_state.memory["user_id"] = session_id
 
         await sc.conv_state.put_user_input(turn_context.activity.text)
+
 
 # Create the Bot
 BOT = PuppetBot()

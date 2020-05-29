@@ -46,6 +46,7 @@ class PatternElement(abc.ABC):
     """
         Base class for element in pattern
     """
+
     @abc.abstractmethod
     def regex_transformation(self):
         raise NotImplementedError
@@ -55,6 +56,7 @@ class RegexElement(PatternElement):
     """
         element for any regex in a word position
     """
+
     def __init__(self, pattern):
         self.pattern = pattern
 
@@ -66,6 +68,7 @@ class WordsRegex(PatternElement):
     """
         List of word regex patterns to match against a single word position
     """
+
     def __init__(self, *patterns):
         self.word_list_tran = f"\\b({'|'.join(patterns)})\\b"
 
@@ -77,6 +80,7 @@ class Words(WordsRegex):
     """
         List of words to match against a single word position
     """
+
     def __init__(self, *words):
         self.word_list_tran = f"\\b({'|'.join(re.escape(w) for w in words)})\\b"
 
@@ -85,6 +89,7 @@ class AnyWords(PatternElement):
     """
         Any word configurable with min, max
     """
+
     def __init__(self, min="", max=""):
         self.pattern = "(\\s?\\b\\w+\\b\\s?){" + f"{str(min)},{str(max)}" + "}"
 
@@ -101,6 +106,7 @@ class Pattern:
     pattern is built out of elements that match a single word in an utterance
 
     """
+
     def __init__(self, *elements: ta.Union[PatternElement, str, tuple]):
         elements_normalized = []
         for e in elements:
@@ -124,6 +130,7 @@ class Intent:
     """
     Intent reposesents a group of patterns to match against an utterance
     """
+
     def __init__(
         self, *patterns: Pattern, preprocess_func: ta.Callable[[str], str] = None
     ) -> None:

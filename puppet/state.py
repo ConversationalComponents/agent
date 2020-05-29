@@ -4,19 +4,24 @@ import uuid
 
 from asyncio import Queue, Event
 
+
 def generate_session_id():
     return str(uuid.uuid4())
+
 
 class Entry:
     def __init__(self, text: str = None, image_url: str = None):
         self.text = text
         self.image_url = image_url
 
+
 class BotEntry(Entry):
     pass
 
+
 class UserEntry(Entry):
     pass
+
 
 class ConversationState(object):
     def __init__(self, output_callback):
@@ -60,7 +65,9 @@ class ConversationState(object):
         return user_input
 
     def last_user_input(self) -> ta.Optional[str]:
-        last_user_input = next(filter(lambda e: isinstance(e, UserEntry), reversed(self.log)), None)
+        last_user_input = next(
+            filter(lambda e: isinstance(e, UserEntry), reversed(self.log)), None
+        )
         if last_user_input:
             return last_user_input.text
 
@@ -78,14 +85,18 @@ class ConversationState(object):
         await self._bot_wait_for_input_event.wait()
         self._bot_wait_for_input_event.clear()
 
+
 class OutOfContext(object):
     def __init__(self, state, handler):
         self.state = state
         self.state.set_out_of_context_handler(handler)
+
     def __enter__(self):
         return self.state
+
     def __exit__(self, type, value, traceback):
         self.state.pop_out_of_context_handler()
+
 
 class TerminationState(object):
     def __init__(self, success=True):
