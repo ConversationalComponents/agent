@@ -23,7 +23,7 @@ class UserEntry(Entry):
     pass
 
 
-class ConversationState(object):
+class ConversationState:
     def __init__(self, output_callback):
         self.output_callback = output_callback
         self.session_id: str = generate_session_id()
@@ -70,6 +70,7 @@ class ConversationState(object):
         )
         if last_user_input:
             return last_user_input.text
+        return None
 
     def set_out_of_context_handler(self, handler: ta.Callable):
         self.out_of_context_handlers.append(handler)
@@ -86,7 +87,7 @@ class ConversationState(object):
         self._bot_wait_for_input_event.clear()
 
 
-class OutOfContext(object):
+class OutOfContext:
     def __init__(self, state, handler):
         self.state = state
         self.state.set_out_of_context_handler(handler)
@@ -98,7 +99,7 @@ class OutOfContext(object):
         self.state.pop_out_of_context_handler()
 
 
-class TerminationState(object):
-    def __init__(self, success=True):
+class Outputs:
+    def __init__(self, success=True, **kwargs):
         self.success = success
-        self.failure = not success
+        self.params = kwargs
