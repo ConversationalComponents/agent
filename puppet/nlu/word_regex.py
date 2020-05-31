@@ -41,11 +41,19 @@ import typing as ta
 import abc
 import re
 
+from collections import defaultdict
+from typing import Optional
+
 
 class PatternElement(abc.ABC):
     """
         Base class for element in pattern
     """
+
+    name = None
+
+    def __init__(self, name=None) -> None:
+        self.name = name
 
     @abc.abstractmethod
     def regex_transformation(self):
@@ -57,7 +65,8 @@ class RegexElement(PatternElement):
         element for any regex in a word position
     """
 
-    def __init__(self, pattern):
+    def __init__(self, pattern, **kwargs):
+        super().__init__(**kwargs)
         self.pattern = pattern
 
     def regex_transformation(self):
@@ -69,7 +78,8 @@ class WordsRegex(PatternElement):
         List of word regex patterns to match against a single word position
     """
 
-    def __init__(self, *patterns):
+    def __init__(self, *patterns, **kwargs):
+        super().__init__(**kwargs)
         self.word_list_tran = f"\\b({'|'.join(patterns)})\\b"
 
     def regex_transformation(self):
@@ -81,7 +91,8 @@ class Words(WordsRegex):
         List of words to match against a single word position
     """
 
-    def __init__(self, *words):
+    def __init__(self, *words, **kwargs):
+        super().__init__(**kwargs)
         self.word_list_tran = f"\\b({'|'.join(re.escape(w) for w in words)})\\b"
 
 
@@ -90,11 +101,17 @@ class AnyWords(PatternElement):
         Any word configurable with min, max
     """
 
-    def __init__(self, min="", max=""):
+    def __init__(self, min="", max="", **kwargs):
+        super().__init__(**kwargs)
         self.pattern = "(\\s?\\b\\w+\\b\\s?){" + f"{str(min)},{str(max)}" + "}"
 
     def regex_transformation(self):
         return self.pattern
+
+
+class Wildcard(RegexElement):
+    def __init__(self, **kwargs) -> None:
+        super().__init__(r"(.*)", **kwargs)
 
 
 WILDCARD = RegexElement(r"(.*)")
@@ -118,19 +135,29 @@ class Pattern:
                 elements_normalized.append(Words(*e))
 
         self.pattern = re.compile(
-            r"\s*".join(e.regex_transformation() for e in elements_normalized),
+            r"\s*".join(self.wrap_element_in_group(e) for e in elements_normalized),
             re.IGNORECASE,
         )
+
+    @staticmethod
+    def wrap_element_in_group(e):
+        e_name_regex = ""
+        if e.name:
+            e_name_regex = f"?P<{e.name}>"
+        return f"({e_name_regex}{e.regex_transformation()})"
 
     def __call__(self, user_input):
         return bool(self.pattern.fullmatch(user_input))
 
+    def extract(self, user_input):
+        m = self.pattern.fullmatch(user_input)
+        if m:
+            return m.groupdict()
+        else:
+            return {}
 
-class Intent:
-    """
-    Intent reposesents a group of patterns to match against an utterance
-    """
 
+class Extractor(abc.ABC):
     def __init__(
         self, *patterns: Pattern, preprocess_func: ta.Callable[[str], str] = None
     ) -> None:
@@ -140,9 +167,47 @@ class Intent:
         else:
             self.preprocess_func = lambda s: s
 
+
+class Intent(Extractor):
+    """
+    Intent reposesents a group of patterns to match against an utterance
+    """
+
     def __call__(self, user_input) -> bool:
         prepro_user_input = self.preprocess_func(user_input)
-        for s in self.patterns:
-            if s(prepro_user_input):
+        for p in self.patterns:
+            if p(prepro_user_input):
                 return True
         return False
+
+
+class Slots(Extractor):
+    def __call__(self, user_input) -> dict:
+        prepro_user_input = self.preprocess_func(user_input)
+        slots = defaultdict(lambda: [])
+        for p in self.patterns:
+            for slot_name, slot_value in p.extract(prepro_user_input).items():
+                slots[slot_name].append(slot_value)
+        return dict(slots)
+
+
+def extract_slot(extractor: Slots, user_input: str, slot_name: str) -> Optional[str]:
+    slot_values = extractor(user_input).get(slot_name, [])
+    if len(slot_values) > 0:
+        return slot_values[0]
+    return None
+
+
+def intent_slot(
+    *patterns: Pattern, preprocess_func: ta.Callable[[str], str] = None
+) -> ta.Tuple[Intent, Slots]:
+    """
+        convenience wrapper to get intent+slot extractor from a set of patterns and preprocessor
+
+    Keyword Arguments:
+        preprocess_func {ta.Callable[[str], str]} -- preprocess function (default: {None})
+
+    Returns:
+        ta.Tuple[Intent, SlotsExtractor] -- intent and slot extractor
+    """
+    return Intent(*patterns, preprocess_func=preprocess_func), Slots(*patterns)
