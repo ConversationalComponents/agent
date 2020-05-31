@@ -10,10 +10,14 @@ from puppet.server import PuppetSessionsManager
 
 CONFIG_SERVER = os.environ.get("COCO_CONFIG_SERVER", "https://cocohub.ai/")
 
+
 async def fetch_component_config(component_id: str) -> dict:
     async with httpx.AsyncClient() as http_client:
-        rv = await http_client.get(f"{CONFIG_SERVER}/api/fetch_component_config/{component_id}")
+        rv = await http_client.get(
+            f"{CONFIG_SERVER}/api/fetch_component_config/{component_id}"
+        )
     return rv.json()
+
 
 class PuppetCoCoApp:
     def __init__(self) -> None:
@@ -30,13 +34,12 @@ class PuppetCoCoApp:
         self.sanic_app.add_route(
             self.config, "/api/config/<blueprint_id>", methods=["GET"]
         )
-        self.sanic_app.add_route(
-            self.config, "/config/<blueprint_id>", methods=["GET"]
-        )
+        self.sanic_app.add_route(self.config, "/config/<blueprint_id>", methods=["GET"])
 
     def blueprint(self, f, config=None):
         async def component(*args, **kwargs):
             return await f(*args, **kwargs)
+
         self.add_blueprint(f, config)
         return component
 
@@ -93,7 +96,9 @@ class PuppetCoCoApp:
         return json(eresp)
 
     async def config(self, request, blueprint_id):
-        return json({
-            "blueprint_id": blueprint_id,
-            blueprint_id: self.blueprints_configs.get(blueprint_id, {})
-        })
+        return json(
+            {
+                "blueprint_id": blueprint_id,
+                blueprint_id: self.blueprints_configs.get(blueprint_id, {}),
+            }
+        )
