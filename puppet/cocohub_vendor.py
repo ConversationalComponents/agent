@@ -67,7 +67,7 @@ class PuppetCoCoApp:
         config_id = json_data.get("config_id")
 
         if config_id and session_id not in self.puppet_session_mgr.sessions:
-            config = (await fetch_component_config(config_id)).get(blueprint_id, {})
+            config = (await fetch_component_config(config_id))
         else:
             config = self.blueprints_configs[blueprint_id]
 
