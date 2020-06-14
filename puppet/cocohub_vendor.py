@@ -85,7 +85,7 @@ class PuppetCoCoApp:
             return_when=asyncio.FIRST_COMPLETED,
         )
 
-        outputs = None
+        outputs = {}
         if sc.bot_task.done():
             result = sc.bot_task.result()
             if result:
@@ -97,7 +97,7 @@ class PuppetCoCoApp:
             "component_done": sc.bot_task.done(),
             "component_failed": False,
             "out_of_context": False,
-            "updated_context": {},
+            "updated_context": sc.conv_state.memory,
             "outputs": outputs,
         }
 
@@ -106,8 +106,5 @@ class PuppetCoCoApp:
 
     async def config(self, request, blueprint_id):
         return json(
-            {
-                "blueprint_id": blueprint_id,
-                blueprint_id: self.blueprints_configs.get(blueprint_id, {}),
-            }
+            self.blueprints_configs.get(blueprint_id, {"blueprint_id": blueprint_id}),
         )
