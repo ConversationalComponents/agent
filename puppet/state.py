@@ -102,4 +102,4 @@ class OutOfContext:
 class Outputs:
     def __init__(self, success=True, **kwargs):
         self.success = success
-        self.params = kwargs
+        self.outputs = kwargs

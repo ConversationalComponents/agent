@@ -67,12 +67,14 @@ class PuppetCoCoApp:
         config_id = json_data.get("config_id")
 
         if config_id and session_id not in self.puppet_session_mgr.sessions:
-            config = (await fetch_component_config(config_id))
+            config = await fetch_component_config(config_id)
         else:
-            config = self.blueprints_configs[blueprint_id]
+            config = None
 
         async def include_config_bp(*args, **kwargs):
-            await bp(*args, config=config, **kwargs)
+            if config:
+                kwargs["config"] = config
+            return await bp(*args, **json_data.get("parameters", {}), **kwargs)
 
         sc = self.puppet_session_mgr.get_session(session_id, include_config_bp)
 
@@ -83,6 +85,12 @@ class PuppetCoCoApp:
             return_when=asyncio.FIRST_COMPLETED,
         )
 
+        outputs = None
+        if sc.bot_task.done():
+            result = sc.bot_task.result()
+            if result:
+                outputs = result.outputs
+
         eresp = {
             "responses": [{"text": r} for r in sc.responses],
             "response": sc.collect_responses(),
@@ -90,6 +98,7 @@ class PuppetCoCoApp:
             "component_failed": False,
             "out_of_context": False,
             "updated_context": {},
+            "outputs": outputs,
         }
 
         eresp["response_time"] = time.perf_counter() - start_time
