@@ -22,7 +22,7 @@ setup(
     author_email="chen@buskilla.com",
     url="https://github.com/chenb67/puppet",
     license="GPLv3",
-    install_requires=["aioconsole", "coco-sdk[async]>=0.0.7"],
+    install_requires=["aioconsole", "coco-sdk[async]>=0.0.8"],
     extras_require={
         "discord": ["discord.py"],
         "msbf": ["botbuilder_core"],
