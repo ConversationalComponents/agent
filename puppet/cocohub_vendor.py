@@ -2,6 +2,8 @@ import os
 import time
 import asyncio
 
+from typing import Optional
+
 import httpx
 from sanic import Sanic
 from sanic.response import json
@@ -11,12 +13,13 @@ from puppet.server import PuppetSessionsManager
 CONFIG_SERVER = os.environ.get("COCO_CONFIG_SERVER", "https://cocohub.ai/")
 
 
-async def fetch_component_config(component_id: str) -> dict:
+async def fetch_component_config(component_id: str) -> Optional[dict]:
     async with httpx.AsyncClient() as http_client:
         rv = await http_client.get(
             f"{CONFIG_SERVER}/api/fetch_component_config/{component_id}"
         )
-    return rv.json()
+    resp_json: dict = rv.json() # type: ignore
+    return resp_json if "error" not in resp_json else None
 
 
 class PuppetCoCoApp:
@@ -59,17 +62,18 @@ class PuppetCoCoApp:
 
         json_data = request.json or {}
 
-        if blueprint_id not in self.blueprints:
-            return json({"error": f"Blueprint: {blueprint_id} not found"}, status=400)
+        config = None
+        if blueprint_id in self.blueprints:
+            bp = self.blueprints[blueprint_id]
+        elif session_id not in self.puppet_session_mgr.sessions:
+            config = await fetch_component_config(blueprint_id)
+            if not config:
+                return json({"error": f"Blueprint: {blueprint_id} not found"}, status=400)
+            blueprint_id = config["blueprint_id"]
 
-        bp = self.blueprints[blueprint_id]
-
-        config_id = json_data.get("config_id")
-
-        if config_id and session_id not in self.puppet_session_mgr.sessions:
-            config = await fetch_component_config(config_id)
+            bp = self.blueprints[blueprint_id]
         else:
-            config = None
+            bp = None
 
         async def include_config_bp(*args, **kwargs):
             if config:
