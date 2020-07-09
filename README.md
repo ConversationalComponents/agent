@@ -58,18 +58,28 @@ Connecting to channels is easy and just requires using regular puppet components
 
 ### Telegram
 Make sure to install puppet with telegram support - `pip install coco-puppet[telegram]`
+
+Create a new bot and get telegram token from Telegram botfather using this guide: https://core.telegram.org/bots#6-botfather
 ```bash
+export TELEGRAM_TOKEN=<Your telegram bot token>
 python3 -m puppet.channels.telegram example.mybot
 ```
 
 ### Discord
 Make sure to install puppet with discord support - `pip install coco-puppet[discord]`
+
+Create a new bot account and get a token using this guide:
+https://discordpy.readthedocs.io/en/latest/discord.html
 ```bash
+export DISCORD_KEY=<Your discord bot token>
 python3 -m puppet.channels.discord example.mybot
 ```
 
 ### Microsoft bot framework
 Make sure to install puppet with microsoft bot framework support - `pip install coco-puppet[msbf]`
+
 ```bash
+export MicrosoftAppId=<Your bot Microsft App Id>
+export MicrosoftAppPassword=<Your bot Microsoft App Password>
 python3 -m puppet.channels.msbf example.mybot
 ```
