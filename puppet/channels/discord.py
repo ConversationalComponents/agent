@@ -7,7 +7,7 @@ import discord
 from discord.channel import DMChannel
 from discord import Message, Embed
 
-from .server import PuppetSessionsManager
+from ..server import PuppetSessionsManager
 
 DISCORD_KEY = os.environ.get("DISCORD_KEY", "")
 

@@ -26,6 +26,7 @@ setup(
     extras_require={
         "discord": ["discord.py"],
         "msbf": ["botbuilder_core"],
+        "telegram": ["aiogram"],
         "dsl": ["hy"],
         "vendor": ["sanic"],
     },
