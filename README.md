@@ -5,6 +5,7 @@ Try puppet if you want to make your chatbot modular using composable components.
 - [Installation](#installation)
 - [Getting Started](#getting-started)
 - [Channels](#channels)
+- [NLU](#basic-language-understanding)
 
 ## Installation
 ```bash
@@ -83,3 +84,50 @@ export MicrosoftAppId=<Your bot Microsft App Id>
 export MicrosoftAppPassword=<Your bot Microsoft App Password>
 python3 -m puppet.channels.msbf example.mybot
 ```
+
+
+## Basic Language Understanding
+Inside puppet.nlu we have simple patterns to regex compiler to perform basic understanding tasks
+
+Compile simple word patterns to regex
+
+Some Examples:
+```python
+intent = Intent(
+    Pattern("the", "boy", "ate", "an", "apple")
+)
+assert intent("the boy ate an apple") == True
+assert intent("the boy ate an orange") == False
+
+intent = Intent(
+    Pattern("the", "boy", "ate", "an", AnyWords(min=1, max=1))
+)
+assert intent("the boy ate an apple") == True
+assert intent("the boy ate an orange") == True
+
+intent = Intent(
+    Pattern("the", Words("boy", "girl"), "ate", "an", AnyWords(min=1, max=1))
+)
+assert intent("the boy ate an apple") == True
+assert intent("the boy ate an orange") == True
+assert intent("the girl ate an orange") == True
+assert intent("the girl ate a banana") == False
+
+intent = Intent(
+    Pattern("the", ("boy", "girl"), "ate", WordsRegex(r"an?"), AnyWords(min=1, max=1))
+)
+assert intent("the boy ate an apple") == True
+assert intent("the boy ate an orange") == True
+assert intent("the girl ate an orange") == True
+assert intent("the girl ate a banana") == True
+assert intent("a nice boy ate an apple") == False
+
+intent = Intent(
+    Pattern(WILDCARD, Words("boy", "girl"), "ate", WordsRegex(r"an?"), AnyWords(min=1, max=1))
+)
+assert intent("a nice boy ate an apple") == True
+```
+
+`Pattern` takes sentence elements and translate each one to optmized regular expression.
+
+`Intent` groups multiple patterns so if any of the patterns match the intent evals to `True`
