@@ -5,17 +5,17 @@ Try puppet if you want to make your chatbot modular using composable components.
 ## Installation
 ```bash
 # optional: create a virtual environment
-python3 -m venv myproject
-source myproject/bin/activate
+python3 -m venv myvenv
+source myvenv/bin/activate
 
 # install puppet
 pip3 install coco-puppet
 ```
 
 ## Create your first bot
-Puppet components are python coroutines (note the ```async def```)
+Puppet components are python coroutines (note the `async def`)
 
-We take ```state``` as the first parameter - which is an object that allow us to interact with the environment the component/bot is running on
+We take `state` as the first parameter - which is an object that allow us to interact with the environment the component/bot is running on
 ```python
 async def mybot(state):
     # state.user_input() waits for the next user input
