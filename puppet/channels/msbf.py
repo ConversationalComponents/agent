@@ -12,7 +12,7 @@ from botbuilder.core import (
 from botbuilder.core import ActivityHandler, MessageFactory
 from botbuilder.schema import Activity
 
-from puppet.server import PuppetSessionsManager
+from ..server import PuppetSessionsManager
 
 PORT = 3978
 APP_ID = os.environ.get("MicrosoftAppId", "")
