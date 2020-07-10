@@ -1,3 +1,5 @@
+[![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/ConversationalComponents/puppet)
+
 # Puppet
 Puppet is a high-level toolkit for building chatbots using conversational components.
 Try puppet if you want to make your chatbot modular using composable components.
