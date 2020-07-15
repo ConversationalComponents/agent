@@ -17,6 +17,7 @@ async def bot_init(bot, *args, **kwargs) -> None:
     s.memory["user_id"] = "shelluser"
     await asyncio.gather(input_loop(s), bot(s, *args, **kwargs))
 
+
 def bot_runner(bot, *args, **kwargs):
     loop = asyncio.get_event_loop()
     loop.run_until_complete(bot_init(bot, *args, **kwargs))

@@ -1,4 +1,3 @@
-
 from puppet.shell import bot_runner
 
 

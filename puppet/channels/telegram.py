@@ -26,6 +26,7 @@ entry = getattr(entry_package, entry_name)
 
 sess_mgr = PuppetSessionsManager()
 
+
 class OutputCallback:
     def __init__(self, chat_id) -> None:
         self.chat_id = chat_id
@@ -48,5 +49,5 @@ async def on_message(message: types.Message):
     await sc.conv_state.put_user_input(message.text)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     executor.start_polling(dp, skip_updates=True)

@@ -18,7 +18,7 @@ async def fetch_component_config(component_id: str) -> Optional[dict]:
         rv = await http_client.get(
             f"{CONFIG_SERVER}/api/fetch_component_config/{component_id}"
         )
-    resp_json: dict = rv.json() # type: ignore
+    resp_json: dict = rv.json()  # type: ignore
     return resp_json if "error" not in resp_json else None
 
 
@@ -68,7 +68,9 @@ class PuppetCoCoApp:
         elif session_id not in self.puppet_session_mgr.sessions:
             config = await fetch_component_config(blueprint_id)
             if not config:
-                return json({"error": f"Blueprint: {blueprint_id} not found"}, status=400)
+                return json(
+                    {"error": f"Blueprint: {blueprint_id} not found"}, status=400
+                )
             blueprint_id = config["blueprint_id"]
 
             bp = self.blueprints[blueprint_id]

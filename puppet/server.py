@@ -2,6 +2,7 @@ import asyncio
 
 from .state import ConversationState
 
+
 class BotSessionContainer:
     def __init__(self, bot_coro, async_output_callback=None):
         event_loop = asyncio.get_event_loop()
