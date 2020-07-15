@@ -1,4 +1,3 @@
-import asyncio
 
 from puppet.shell import bot_runner
 
@@ -9,4 +8,4 @@ async def echo(state):
 
 
 if __name__ == "__main__":
-    asyncio.run(bot_runner(echo))
+    bot_runner(echo)

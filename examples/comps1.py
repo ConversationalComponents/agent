@@ -54,7 +54,6 @@ async def lobby(state):
 
 
 if __name__ == "__main__":
-    import asyncio
     from puppet.shell import bot_runner
 
-    asyncio.run(bot_runner(sample_bot))
+    bot_runner(sample_bot)

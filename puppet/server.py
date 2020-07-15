@@ -2,12 +2,12 @@ import asyncio
 
 from .state import ConversationState
 
-
 class BotSessionContainer:
     def __init__(self, bot_coro, async_output_callback=None):
+        event_loop = asyncio.get_event_loop()
         self.responses = []
         self.conv_state = ConversationState(async_output_callback or self.add_response)
-        self.bot_task: asyncio.Task = asyncio.create_task(bot_coro(self.conv_state))
+        self.bot_task: asyncio.Task = event_loop.create_task(bot_coro(self.conv_state))
 
     async def add_response(self, text, *args, **kwargs):
         self.responses.append(text)
