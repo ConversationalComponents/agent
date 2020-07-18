@@ -1,9 +1,11 @@
 """ conversation state definition """
+import logging
 import typing as ta
 import uuid
 
 from asyncio import Queue, Event
 
+logger = logging.getLogger("puppet")
 
 def generate_session_id():
     return str(uuid.uuid4())
@@ -40,6 +42,9 @@ class ConversationState:
         Arguments:
             text {str} -- The text message
         """
+        logger.debug(f"BOT:{self.session_id}: {text}")
+        if image_url:
+            logger.debug(f"BOT:{self.session_id}: {image_url}")
         self.log.append(BotEntry(text, image_url))
         await self.output_callback(text, image_url)
 
@@ -61,6 +66,7 @@ class ConversationState:
         if self._inputs_queue.empty():
             self._bot_wait_for_input_event.set()
         user_input = await self._inputs_queue.get()
+        logger.debug(f"USER:{self.session_id}: {user_input}")
         self.log.append(UserEntry(user_input))
         return user_input
 
