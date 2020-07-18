@@ -10,7 +10,7 @@ from puppet.server import PuppetSessionsManager
 API_TOKEN = os.environ["TELEGRAM_TOKEN"]
 
 # Configure logging
-logging.basicConfig(filename="puppet-discord.log", level=logging.DEBUG)
+logging.basicConfig(filename="puppet-telegram.log", level=logging.DEBUG)
 
 # Initialize bot and dispatcher
 bot = Bot(token=API_TOKEN)
