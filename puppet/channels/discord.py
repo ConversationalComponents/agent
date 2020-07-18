@@ -1,6 +1,7 @@
 import os
 import sys
 import importlib
+import logging
 
 import discord
 
@@ -8,6 +9,8 @@ from discord.channel import DMChannel
 from discord import Message, Embed
 
 from ..server import PuppetSessionsManager
+
+logging.basicConfig(filename="puppet-discord.log", level=logging.DEBUG)
 
 DISCORD_KEY = os.environ.get("DISCORD_KEY", "")
 

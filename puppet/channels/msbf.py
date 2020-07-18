@@ -1,3 +1,4 @@
+import logging
 import os
 import sys
 import importlib
@@ -14,7 +15,8 @@ from botbuilder.schema import Activity
 
 from ..server import PuppetSessionsManager
 
-PORT = os.environ.get(PORT, 3978)
+logging.basicConfig(filename="puppet-discord.log", level=logging.DEBUG)
+PORT = os.environ.get("PORT", 3978)
 APP_ID = os.environ.get("MicrosoftAppId", "")
 APP_PASSWORD = os.environ.get("MicrosoftAppPassword", "")
 
