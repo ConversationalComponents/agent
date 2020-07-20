@@ -7,6 +7,7 @@ from asyncio import Queue, Event
 
 logger = logging.getLogger("puppet")
 
+
 def generate_session_id():
     return str(uuid.uuid4())
 

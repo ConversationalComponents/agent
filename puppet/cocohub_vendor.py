@@ -1,3 +1,4 @@
+import logging
 import os
 import time
 import asyncio
@@ -11,6 +12,8 @@ from sanic.response import json
 from puppet.server import PuppetSessionsManager
 
 CONFIG_SERVER = os.environ.get("COCO_CONFIG_SERVER", "https://cocohub.ai/")
+
+logging.basicConfig(filename="cocohub-puppet.log", level=logging.DEBUG)
 
 
 async def fetch_component_config(component_id: str) -> Optional[dict]:
