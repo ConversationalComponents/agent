@@ -10,6 +10,7 @@ from sanic import Sanic
 from sanic.response import json
 
 from puppet.server import PuppetSessionsManager
+from puppet.state import Outputs
 
 CONFIG_SERVER = os.environ.get("COCO_CONFIG_SERVER", "https://cocohub.ai/")
 
@@ -94,20 +95,20 @@ class PuppetCoCoApp:
             return_when=asyncio.FIRST_COMPLETED,
         )
 
-        outputs = {}
+        outputs = Outputs()
         if sc.bot_task.done():
             result = sc.bot_task.result()
             if result:
-                outputs = result.outputs
+                outputs = result
 
         eresp = {
             "responses": [{"text": r} for r in sc.responses],
             "response": sc.collect_responses(),
             "component_done": sc.bot_task.done(),
-            "component_failed": False,
+            "component_failed": sc.bot_task.done() and not outputs.success,
             "out_of_context": False,
             "updated_context": sc.conv_state.memory,
-            "outputs": outputs,
+            "outputs": outputs.outputs,
         }
 
         eresp["response_time"] = time.perf_counter() - start_time
