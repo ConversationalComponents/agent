@@ -88,6 +88,10 @@ class PuppetCoCoApp:
 
         sc = self.puppet_session_mgr.get_session(session_id, include_config_bp)
 
+        if "source_language_code" in json_data:
+            sc.conv_state.memory["source_language_code"] = json_data[
+                "source_language_code"
+            ]
         await sc.conv_state.put_user_input(json_data.get("user_input", ""))
 
         await asyncio.wait(
