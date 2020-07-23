@@ -30,5 +30,7 @@ async def coco(state, component_id, user_input=None, context={}, **params):
 
     if component_response.response:
         await state.say(component_response.response)
-    if component_response.component_failed:
-        return Outputs(success=False)
+
+    return Outputs(
+        success=not component_response.component_failed, **component_response.outputs
+    )
