@@ -92,6 +92,9 @@ class PuppetCoCoApp:
             sc.conv_state.memory["source_language_code"] = json_data[
                 "source_language_code"
             ]
+
+        sc.conv_state.memory.update(json_data.get("context", {}))
+
         await sc.conv_state.put_user_input(json_data.get("user_input", ""))
 
         await asyncio.wait(
