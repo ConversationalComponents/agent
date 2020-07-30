@@ -17,13 +17,20 @@ class Entry:
         self.text = text
         self.image_url = image_url
 
+    def __repr__(self):
+        if self.image_url:
+            return " #img#: ".join([self.text or "", self.image_url])
+        return self.text or ""
+
 
 class BotEntry(Entry):
-    pass
+    def __repr__(self):
+        return f"BOT >> {super().__repr__()}"
 
 
 class UserEntry(Entry):
-    pass
+    def __repr__(self):
+        return f"USER >> {super().__repr__()}"
 
 
 class ConversationState:
