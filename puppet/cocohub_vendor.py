@@ -43,17 +43,18 @@ class PuppetCoCoApp:
         )
         self.sanic_app.add_route(self.config, "/config/<blueprint_id>", methods=["GET"])
 
-    def blueprint(self, f, config=None):
+    def blueprint(self, f, config=None, component_id=None):
         async def component(*args, **kwargs):
             return await f(*args, **kwargs)
 
-        self.add_blueprint(f, config)
+        self.add_blueprint(f, component_id=component_id, config=config)
         return component
 
-    def add_blueprint(self, f, config=None):
-        self.blueprints[f.__name__] = f
+    def add_blueprint(self, f, config=None, component_id=None):
+        component_id = component_id or f.__name__
+        self.blueprints[component_id] = f
         if config:
-            self.blueprints_configs[f.__name__] = config
+            self.blueprints_configs[component_id] = config
 
     def run(self, *args, **kwargs):
         self.sanic_app.run(*args, **kwargs)
