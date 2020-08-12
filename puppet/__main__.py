@@ -1,13 +1,4 @@
-import sys
-import importlib
+from puppet.shell import cli
 
-from .shell import bot_runner
-
-_, entry_path, *args = sys.argv
-
-entry_package_name, entry_name = entry_path.rsplit(".", 1)
-
-entry_package = importlib.import_module(entry_package_name)
-entry = getattr(entry_package, entry_name)
-
-bot_runner(entry, *args)
+if __name__ == "__main__":
+    cli()
