@@ -9,6 +9,7 @@ import base64
 import secrets
 import asyncio
 import random
+import webbrowser
 
 import click
 import httpx
@@ -37,21 +38,31 @@ class CoCoHubServiceAccount(BaseModel):
     client_secret: str
     name: str = ""
 
-def validate_project(component_yaml_path):
+def validate_project(component_yaml_path: str):
+    """
+        offline validation for project structure and configuraton
+    """
     with open(component_yaml_path, "r") as f:
         project_config = ComponentYAML.validate(yaml.safe_load(f))
     return project_config
 
-def package_project(tmpdir: pathlib.Path, component_id: str):
+def package_project(tmpdir: pathlib.Path, component_yaml_path: str, component_id: str) -> pathlib.Path:
+    """
+        package project files to gzipped tar for upload
+    """
     project_root = pathlib.Path(".")
     (project_root / "requirements.txt").touch()
     project_tar_file = tmpdir / f"{component_id}.tar.gz" 
     with tarfile.open(project_tar_file, "w:gz") as tar:
+        tar.add(component_yaml_path, arcname="component.yaml")
         for f in project_root.glob("*"):
             tar.add(f, recursive=True)
     return project_tar_file
 
-def generate_service_account(service_account_path):
+def generate_service_account(service_account_path: pathlib.Path) -> CoCoHubServiceAccount:
+    """
+        generate service account and attach to the user profile on cocohub
+    """
     service_account = CoCoHubServiceAccount(
         name=os.uname().nodename,
         client_id=secrets.token_urlsafe(12),
@@ -63,14 +74,16 @@ def generate_service_account(service_account_path):
     with service_account_path.open("r") as f:
         base64_service_account = base64.b64encode(f.read().encode("utf-8")).decode("utf-8")
     
-    import webbrowser
     webbrowser.open(COCOHUB_AUTHORIZE_SERVICE_ACCOUNT_URL + f"?serviceAccount={base64_service_account}")
     if not click.confirm("Are you done authenticating at CoCoHub?"):
         service_account_path.unlink()
         raise Exception("No service account. try again after authenticating at CoCoHub")
     return service_account
 
-async def get_access_token(http_client):
+async def get_access_token(http_client: httpx.AsyncClient) -> dict:
+    """
+        use service account to generate access token / generate service account if missing
+    """
     service_account_path = pathlib.Path(os.path.expanduser(SERVICE_ACCOUNT_PATH))
     if service_account_path.exists():
         with service_account_path.open("r") as f:
@@ -90,14 +103,20 @@ async def get_access_token(http_client):
     access_token = http_response.json()
     return access_token
 
-async def push_deployment(http_client, project_tarfile, access_token):
+async def push_deployment(http_client: httpx.AsyncClient, project_tarfile: pathlib.Path, access_token: dict) -> dict:
+    """
+        push project tar to cocohub
+    """
     files = {'file': project_tarfile.open("rb")}
     headers = {"Authorization": f"Bearer {access_token['access_token']}"}
     http_response = await http_client.post(COCOHUB_SUBMIT_URL, files=files, headers=headers, timeout=60*5)
     http_response.raise_for_status()
     return http_response.json()
 
-async def deploy(project_config_path):
+async def deploy(project_config_path: str):
+    """
+        top level cli command to deploy a project
+    """
     async with httpx.AsyncClient() as http_client:
         with tempfile.TemporaryDirectory() as tmpdir_p:
             click.echo("Authenticating..")
@@ -108,7 +127,7 @@ async def deploy(project_config_path):
 
             if click.confirm(f'Deploying {proj_conf.component_id}, Do you want to continue?'):
 
-                tarfile = package_project(tmpdir, proj_conf.component_id)
+                tarfile = package_project(tmpdir, project_config_path, proj_conf.component_id)
                 deploy_task = asyncio.create_task(push_deployment(http_client, tarfile, access_token))
                 print()
                 random_signs = ["⭐️", "💫", "🌟", "✨", "⚡️"]
