@@ -24,13 +24,13 @@ def bot_runner(bot, *args, **kwargs):
     loop.run_until_complete(bot_init(bot, *args, **kwargs))
 
 
-
 @click.group()
 def cli():
     """
         Puppet CLI, test and deploy your projects
     """
     pass
+
 
 @cli.command()
 @click.argument("component")
@@ -43,7 +43,7 @@ def run(component):
     import importlib
     import sys
 
-    sys.path.append('.')
+    sys.path.append(".")
 
     entry_package_name, entry_name = component.split(":")
 
@@ -52,11 +52,18 @@ def run(component):
 
     bot_runner(entry)
 
+
 @cli.command()
-@click.option("--config", default="component.yaml", help="component yaml config", type=click.Path(exists=True))
+@click.option(
+    "--config",
+    default="component.yaml",
+    help="component yaml config",
+    type=click.Path(exists=True),
+)
 def deploy(config):
     """
         deploy a puppet project to CoCoHub cloud
     """
     from puppet.deploy import deploy
+
     asyncio.run(deploy(config))

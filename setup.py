@@ -22,17 +22,17 @@ setup(
     author_email="chen@buskilla.com",
     url="https://github.com/chenb67/puppet",
     license="GPLv3",
-    entry_points='''
+    entry_points="""
         [console_scripts]
         puppet=puppet.shell:cli
-    ''',
+    """,
     install_requires=[
         "coco-sdk[async]>=0.0.8",
         "aioconsole",
         "pydantic",
         "click",
-        "pyyaml"
-        ],
+        "pyyaml",
+    ],
     extras_require={
         "discord": ["discord.py"],
         "msbf": ["botbuilder_core"],
