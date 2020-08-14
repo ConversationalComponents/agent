@@ -1,4 +1,4 @@
-from puppet.state import Outputs
+from agt.state import Outputs
 from coco.async_api import ComponentSession
 
 

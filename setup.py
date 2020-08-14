@@ -13,7 +13,7 @@ def read(fname):
 long_description = read("README.md")
 
 setup(
-    name="coco-puppet",
+    name="agt",
     version=PYPI_PACKAGE_VERSION,
     description="Modular composable chatbot development",
     long_description=long_description,
@@ -24,7 +24,7 @@ setup(
     license="GPLv3",
     entry_points="""
         [console_scripts]
-        puppet=puppet.shell:cli
+        agt=agt.shell:cli
     """,
     install_requires=[
         "coco-sdk[async]>=0.0.8",

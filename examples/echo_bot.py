@@ -1,4 +1,4 @@
-from puppet.shell import bot_runner
+from agt.shell import bot_runner
 
 
 async def echo(state):

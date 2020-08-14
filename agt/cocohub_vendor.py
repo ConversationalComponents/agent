@@ -9,12 +9,12 @@ import httpx
 from sanic import Sanic
 from sanic.response import json
 
-from puppet.server import PuppetSessionsManager
-from puppet.state import Outputs
+from agt.server import AgentSessionsManager
+from agt.state import Outputs
 
 CONFIG_SERVER = os.environ.get("COCO_CONFIG_SERVER", "https://cocohub.ai/")
 
-logging.basicConfig(filename="cocohub-puppet.log", level=logging.DEBUG)
+logging.basicConfig(filename="cocohub-agt.log", level=logging.DEBUG)
 
 
 async def fetch_component_config(component_id: str) -> Optional[dict]:
@@ -26,12 +26,12 @@ async def fetch_component_config(component_id: str) -> Optional[dict]:
     return resp_json if "error" not in resp_json else None
 
 
-class PuppetCoCoApp:
+class AgentCoCoApp:
     def __init__(self) -> None:
         self.blueprints: dict = {}
         self.blueprints_configs: dict = {}
         self.sanic_app = Sanic(__name__)
-        self.puppet_session_mgr = PuppetSessionsManager()
+        self.agent_session_mgr = AgentSessionsManager()
         self.sanic_app.add_route(
             self.exchange, "/api/exchange/<blueprint_id>/<session_id>", methods=["POST"]
         )
@@ -70,7 +70,7 @@ class PuppetCoCoApp:
         config = None
         if blueprint_id in self.blueprints:
             bp = self.blueprints[blueprint_id]
-        elif session_id not in self.puppet_session_mgr.sessions:
+        elif session_id not in self.agent_session_mgr.sessions:
             config = await fetch_component_config(blueprint_id)
             if not config:
                 return json(
@@ -87,7 +87,7 @@ class PuppetCoCoApp:
                 kwargs["config"] = config
             return await bp(*args, **json_data.get("parameters", {}), **kwargs)
 
-        sc = self.puppet_session_mgr.get_session(session_id, include_config_bp)
+        sc = self.agent_session_mgr.get_session(session_id, include_config_bp)
 
         if "source_language_code" in json_data:
             sc.conv_state.memory["source_language_code"] = json_data[

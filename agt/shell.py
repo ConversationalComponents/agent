@@ -27,7 +27,7 @@ def bot_runner(bot, *args, **kwargs):
 @click.group()
 def cli():
     """
-        Puppet CLI, test and deploy your projects
+        agt CLI, test and deploy your projects
     """
     pass
 
@@ -36,9 +36,9 @@ def cli():
 @click.argument("component")
 def run(component):
     """
-        Run a puppet COMPONENT in the shell for testing
+        Run an Agent COMPONENT in the shell for testing
 
-        COMPONENT example - module_a.module_b:puppet_func_name"
+        COMPONENT example - module_a.module_b:agent_func_name"
     """
     import importlib
     import sys
@@ -62,8 +62,8 @@ def run(component):
 )
 def deploy(config):
     """
-        deploy a puppet project to CoCoHub cloud
+        deploy an agent project to CoCoHub cloud
     """
-    from puppet.deploy import deploy
+    from agt.deploy import deploy
 
     asyncio.run(deploy(config))

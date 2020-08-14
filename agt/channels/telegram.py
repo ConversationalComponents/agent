@@ -5,12 +5,12 @@ import logging
 
 from aiogram import Bot, Dispatcher, executor, types
 
-from puppet.server import PuppetSessionsManager
+from agt.server import AgentSessionsManager
 
 API_TOKEN = os.environ["TELEGRAM_TOKEN"]
 
 # Configure logging
-logging.basicConfig(filename="puppet-telegram.log", level=logging.DEBUG)
+logging.basicConfig(filename="agt-telegram.log", level=logging.DEBUG)
 
 # Initialize bot and dispatcher
 bot = Bot(token=API_TOKEN)
@@ -24,7 +24,7 @@ entry_package_name, entry_name = entry_path.rsplit(".", 1)
 entry_package = importlib.import_module(entry_package_name)
 entry = getattr(entry_package, entry_name)
 
-sess_mgr = PuppetSessionsManager()
+sess_mgr = AgentSessionsManager()
 
 
 class OutputCallback:

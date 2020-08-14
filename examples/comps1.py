@@ -1,9 +1,9 @@
-from puppet.templates import pick_first_match
-from puppet import coco
-from puppet.state import OutOfContext, ConversationState
-from puppet.nlu.regex import RegexIntent
+from agt.templates import pick_first_match
+from agt import coco
+from agt.state import OutOfContext, ConversationState
+from agt.nlu.regex import RegexIntent
 
-from puppet.std.eliza import eliza_fallback
+from agt.std.eliza import eliza_fallback
 
 intent_hi = RegexIntent(r"(.*)\b(hi|hello|hey)\b(.*)")
 intent_no = RegexIntent(r"(.*)\b(no|nope|never)\b(.*)")
@@ -54,6 +54,6 @@ async def lobby(state):
 
 
 if __name__ == "__main__":
-    from puppet.shell import bot_runner
+    from agt.shell import bot_runner
 
     bot_runner(sample_bot)

@@ -1,5 +1,5 @@
 import typing
-from puppet.nlu.word_regex import Intent, Pattern, WILDCARD, AnyWords
+from agt.nlu.word_regex import Intent, Pattern, WILDCARD, AnyWords
 
 
 yes_intent = Intent(

@@ -5,7 +5,7 @@ import uuid
 
 from asyncio import Queue, Event
 
-logger = logging.getLogger("puppet")
+logger = logging.getLogger("agt")
 
 
 def generate_session_id():

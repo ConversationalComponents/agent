@@ -1,4 +1,4 @@
-from puppet.shell import cli
+from agt.shell import cli
 
 if __name__ == "__main__":
     cli()

@@ -1,9 +1,9 @@
-import puppet
-from puppet.std.eliza import eliza_fallback
+import agt
+from agt.std.eliza import eliza_fallback
 
-from puppet.cocohub_vendor import PuppetCoCoApp
+from agt.cocohub_vendor import AgentCoCoApp
 
-app = PuppetCoCoApp()
+app = AgentCoCoApp()
 
 
 @app.blueprint
@@ -20,7 +20,7 @@ async def echo(state):
 
 @app.blueprint
 async def namer_vp3(state):
-    await puppet.coco(state, "namer_vp3")
+    await agt.coco(state, "namer_vp3")
 
 
 if __name__ == "__main__":

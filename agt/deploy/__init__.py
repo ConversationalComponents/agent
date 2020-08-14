@@ -24,7 +24,7 @@ COCOHUB_AUTHORIZE_SERVICE_ACCOUNT_URL = (
 )
 
 SERVICE_ACCOUNT_PATH = os.environ.get(
-    "PUPPET_SERVICE_ACCOUNT", "~/.puppet_service_account"
+    "AGT_SERVICE_ACCOUNT", "~/.agt_service_account"
 )
 
 
@@ -36,7 +36,7 @@ class ComponentYAML(BaseModel):
     def entrypoint_format(cls, v):
         if not ENTRYPOINT_FORMAT.match(v):
             raise ValueError(
-                "entrypoint format should be module_name.module_name:puppet_component_func"
+                "entrypoint format should be module_name.module_name:agent_component_func"
             )
         return v
 

@@ -13,9 +13,9 @@ from botbuilder.core import (
 from botbuilder.core import ActivityHandler, MessageFactory
 from botbuilder.schema import Activity
 
-from ..server import PuppetSessionsManager
+from ..server import AgentSessionsManager
 
-logging.basicConfig(filename="puppet-msbf.log", level=logging.DEBUG)
+logging.basicConfig(filename="agt-msbf.log", level=logging.DEBUG)
 PORT = os.environ.get("PORT", 3978)
 APP_ID = os.environ.get("MicrosoftAppId", "")
 APP_PASSWORD = os.environ.get("MicrosoftAppPassword", "")
@@ -25,7 +25,7 @@ APP_PASSWORD = os.environ.get("MicrosoftAppPassword", "")
 SETTINGS = BotFrameworkAdapterSettings(APP_ID, APP_PASSWORD)
 ADAPTER = BotFrameworkAdapter(SETTINGS)
 
-sess_mgr = PuppetSessionsManager()
+sess_mgr = AgentSessionsManager()
 
 
 class OutputCallback:

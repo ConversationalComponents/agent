@@ -8,9 +8,9 @@ import discord
 from discord.channel import DMChannel
 from discord import Message, Embed
 
-from ..server import PuppetSessionsManager
+from ..server import AgentSessionsManager
 
-logging.basicConfig(filename="puppet-discord.log", level=logging.DEBUG)
+logging.basicConfig(filename="agt-discord.log", level=logging.DEBUG)
 
 DISCORD_KEY = os.environ.get("DISCORD_KEY", "")
 
@@ -21,7 +21,7 @@ entry_package_name, entry_name = entry_path.rsplit(".", 1)
 entry_package = importlib.import_module(entry_package_name)
 entry = getattr(entry_package, entry_name)
 
-sess_mgr = PuppetSessionsManager()
+sess_mgr = AgentSessionsManager()
 
 client = discord.Client()
 

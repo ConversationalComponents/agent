@@ -19,7 +19,7 @@ class BotSessionContainer:
         return response
 
 
-class PuppetSessionsManager:
+class AgentSessionsManager:
     def __init__(self):
         self.sessions = {}
 

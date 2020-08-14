@@ -2,7 +2,7 @@
 
 (defmacro intent [&rest patterns]
   `(do
-     (import [puppet.nlu.word_regex [Intent Pattern WordsRegex WILDCARD AnyWords]])
+     (import [agt.nlu.word_regex [Intent Pattern WordsRegex WILDCARD AnyWords]])
      (setv $ AnyWords)
      (Intent ~@(map (fn [p]
                       `(Pattern ~@(map (fn [pe]

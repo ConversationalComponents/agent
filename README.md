@@ -1,8 +1,8 @@
 [![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/ConversationalComponents/puppet)
 
-# Puppet
-Puppet is a high-level toolkit for building chatbots using conversational components.
-Try puppet if you want to make your chatbot modular using composable components.
+# Agent (agt)
+Agent is a high-level toolkit for building chatbots using conversational components.
+Try Agent if you want to make your chatbot modular using composable components.
 
 - [Installation](#installation)
 - [Getting Started](#getting-started)
@@ -15,8 +15,8 @@ Try puppet if you want to make your chatbot modular using composable components.
 python3 -m venv myvenv
 source myvenv/bin/activate
 
-# install puppet
-pip3 install coco-puppet
+# install agt
+pip3 install agt
 ```
 #### Additional dependecies
 You may want to install dependencies to connect to channels such as telegram and discord or share components on cocohub.
@@ -30,14 +30,14 @@ Available dependecies
 
 Examples:
 ```bash
-pip install coco-puppet[telegram]
+pip install agt[telegram]
 # or for multiple dependecies
-pip install coco-puppet[telegram,dsl]
+pip install agt[telegram,dsl]
 ```
 
 ## Getting Started
 ### Create your first bot
-Puppet components are python coroutines (note the `async def`)
+Agent components are python coroutines (note the `async def`)
 
 We take `state` as the first parameter - which is an object that allow us to interact with the environment the component/bot is running on
 ```python
@@ -53,43 +53,43 @@ Paste this code in a file called example.py
 
 ### Try it in the terminal
 ```bash
-python3 -m puppet example.mybot
+python3 -m agt example.mybot
 ```
 
 ## Channels
-Connecting to channels is easy and just requires using regular puppet components
+Connecting to channels is easy and just requires using regular Agent components
 
 ### Telegram
-Make sure to install puppet with telegram support - `pip install coco-puppet[telegram]`
+Make sure to install agt with telegram support - `pip install agt[telegram]`
 
 Create a new bot and get telegram token from Telegram botfather using this guide: https://core.telegram.org/bots#6-botfather
 ```bash
 export TELEGRAM_TOKEN=<Your telegram bot token>
-python3 -m puppet.channels.telegram example.mybot
+python3 -m agt.channels.telegram example.mybot
 ```
 
 ### Discord
-Make sure to install puppet with discord support - `pip install coco-puppet[discord]`
+Make sure to install agt with discord support - `pip install agt[discord]`
 
 Create a new bot account and get a token using this guide:
 https://discordpy.readthedocs.io/en/latest/discord.html
 ```bash
 export DISCORD_KEY=<Your discord bot token>
-python3 -m puppet.channels.discord example.mybot
+python3 -m agt.channels.discord example.mybot
 ```
 
 ### Microsoft bot framework
-Make sure to install puppet with microsoft bot framework support - `pip install coco-puppet[msbf]`
+Make sure to install agt with microsoft bot framework support - `pip install agt[msbf]`
 
 ```bash
 export MicrosoftAppId=<Your bot Microsft App Id>
 export MicrosoftAppPassword=<Your bot Microsoft App Password>
-python3 -m puppet.channels.msbf example.mybot
+python3 -m agt.channels.msbf example.mybot
 ```
 
 
 ## Basic Language Understanding
-Inside puppet.nlu we have simple patterns to regex compiler to perform basic understanding tasks
+Inside agt.nlu we have simple patterns to regex compiler to perform basic understanding tasks
 
 Compile simple word patterns to regex
 
