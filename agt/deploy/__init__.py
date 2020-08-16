@@ -17,7 +17,7 @@ from pydantic import BaseModel, validator
 
 ENTRYPOINT_FORMAT = re.compile(r"^[A-z][A-z0-9\_\.]*:[A-z][A-z0-9\_]*$")
 
-COCOHUB_SUBMIT_URL = "https://cocohub.ai/v2/submit_puppet_app"
+COCOHUB_SUBMIT_URL = "https://cocohub.ai/v2/submit_agent_app"
 COCOHUB_TOKEN_URL = "https://cocohub.ai/v2/service_account/token"
 COCOHUB_AUTHORIZE_SERVICE_ACCOUNT_URL = (
     "https://cocohub.ai/auth/confirm_service_account"
