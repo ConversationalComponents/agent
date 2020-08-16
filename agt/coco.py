@@ -14,10 +14,12 @@ async def coco(state, component_id, user_input=None, context={}, **params):
         parameters=params,
         source_language_code=state.memory.get("source_language_code"),
     )
+    state.memory = {**state.memory, **component_response.updated_context}
+
     while not component_response.component_done:
         if component_response.response:
             await state.say(component_response.response)
-        state.memory = {**state.memory, **component_response.updated_context}
+
         if component_response.out_of_context:
             await state.out_of_context(state.last_user_input())
         user_input = await state.user_input()
@@ -27,6 +29,7 @@ async def coco(state, component_id, user_input=None, context={}, **params):
             parameters=params,
             source_language_code=state.memory.get("source_language_code"),
         )
+        state.memory = {**state.memory, **component_response.updated_context}
 
     if component_response.response:
         await state.say(component_response.response)
