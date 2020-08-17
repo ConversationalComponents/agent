@@ -16,6 +16,7 @@ import httpx
 from pydantic import BaseModel, validator
 
 ENTRYPOINT_FORMAT = re.compile(r"^[A-z][A-z0-9\_\.]*:[A-z][A-z0-9\_]*$")
+COMPONENT_ID_FORMAT = re.compile(r"^[A-z][A-z0-9\_\.-]*$")
 
 COCOHUB_SUBMIT_URL = "https://cocohub.ai/v2/submit_agent_app"
 COCOHUB_TOKEN_URL = "https://cocohub.ai/v2/service_account/token"
@@ -39,6 +40,15 @@ class ComponentYAML(BaseModel):
                 "entrypoint format should be module_name.module_name:agent_component_func"
             )
         return v
+
+    @validator("component_id")
+    def component_id_format(cls, v):
+        if not COMPONENT_ID_FORMAT.match(v):
+            raise ValueError(
+                "component_id must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character"
+            )
+        return v
+
 
 
 class CoCoHubServiceAccount(BaseModel):
