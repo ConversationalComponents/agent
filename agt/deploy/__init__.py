@@ -24,9 +24,7 @@ COCOHUB_AUTHORIZE_SERVICE_ACCOUNT_URL = (
     "https://cocohub.ai/auth/confirm_service_account"
 )
 
-SERVICE_ACCOUNT_PATH = os.environ.get(
-    "AGT_SERVICE_ACCOUNT", "~/.agt_service_account"
-)
+SERVICE_ACCOUNT_PATH = os.environ.get("AGT_SERVICE_ACCOUNT", "~/.agt_service_account")
 
 
 class ComponentYAML(BaseModel):
@@ -48,7 +46,6 @@ class ComponentYAML(BaseModel):
                 "component_id must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character"
             )
         return v
-
 
 
 class CoCoHubServiceAccount(BaseModel):

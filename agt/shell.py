@@ -67,3 +67,46 @@ def deploy(config):
     from agt.deploy import deploy
 
     asyncio.run(deploy(config))
+
+
+@cli.command()
+@click.argument("component")
+@click.option(
+    "--component_id",
+    help="The component id under exchange /api/exchange/<component_id>",
+    type=click.STRING,
+)
+@click.option(
+    "--config",
+    help="Default config for the component e.g. module:TEMPLATE_DICT (when calling /api/config/<component_id>)",
+    type=click.STRING,
+)
+@click.option(
+    "--port", default=8080, help="Port to serve the component on", type=click.INT,
+)
+def serve(component, component_id, config, port):
+    """
+    Serve on a local http server a component with cocohub exchange protocol
+    component format is module:agt_comp_name
+    """
+    import sys
+    import importlib
+    from agt.cocohub_vendor import AgentCoCoApp
+
+    sys.path.append(".")
+
+    agent_app = AgentCoCoApp()
+
+    comp_module_path, comp_module_name = component.rsplit(":", maxsplit=1)
+    comp_module = importlib.import_module(comp_module_path)
+    comp = getattr(comp_module, comp_module_name)
+
+    config_obj = None
+    if config:
+        config_module_path, config_module_name = config.rsplit(":", maxsplit=1)
+        config_module = importlib.import_module(config_module_path)
+        config_obj = getattr(config_module, config_module_name)
+
+    agent_app.add_blueprint(comp, component_id=component_id, config=config_obj)
+
+    agent_app.run(host="0.0.0.0", port=port)
