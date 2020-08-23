@@ -30,12 +30,21 @@ SERVICE_ACCOUNT_PATH = os.environ.get("AGT_SERVICE_ACCOUNT", "~/.agt_service_acc
 class ComponentYAML(BaseModel):
     component_id: str
     entrypoint: str
+    default_config: str = None
 
     @validator("entrypoint")
     def entrypoint_format(cls, v):
         if not ENTRYPOINT_FORMAT.match(v):
             raise ValueError(
                 "entrypoint format should be module_name.module_name:agent_component_func"
+            )
+        return v
+
+    @validator("default_config")
+    def default_config_format(cls, v):
+        if not ENTRYPOINT_FORMAT.match(v):
+            raise ValueError(
+                "default_config format should be module_name.module_name:agent_component_func"
             )
         return v
 
