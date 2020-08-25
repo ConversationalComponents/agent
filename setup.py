@@ -38,7 +38,7 @@ setup(
         "msbf": ["botbuilder_core"],
         "telegram": ["aiogram"],
         "dsl": ["hy"],
-        "vendor": ["sanic"],
+        "vendor": ["sanic", "python-dotenv"],
     },
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",

@@ -1,7 +1,12 @@
-import click
 import asyncio
-from .state import ConversationState
+
+import dotenv
+import click
 from aioconsole import ainput
+
+from .state import ConversationState
+
+dotenv.load_dotenv()
 
 
 async def input_loop(s) -> None:
