@@ -12,6 +12,7 @@ async def coco(state, component_id, user_input=None, context={}, **params):
         user_input,
         context=context,
         parameters=params,
+        flatten_context=True,
         source_language_code=state.memory.get("source_language_code"),
     )
     state.memory = {**state.memory, **component_response.updated_context}
@@ -27,6 +28,7 @@ async def coco(state, component_id, user_input=None, context={}, **params):
             user_input,
             context=context,
             parameters=params,
+            flatten_context=True,
             source_language_code=state.memory.get("source_language_code"),
         )
         state.memory = {**state.memory, **component_response.updated_context}

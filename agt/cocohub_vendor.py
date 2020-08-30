@@ -12,7 +12,7 @@ from sanic.response import json
 from agt.server import AgentSessionsManager
 from agt.state import Outputs
 
-CONFIG_SERVER = os.environ.get("COCO_CONFIG_SERVER", "https://cocohub.ai/")
+COCOHUB_URL = os.environ.get("COCOHUB_URL", "https://cocohub.ai")
 
 logging.basicConfig(filename="cocohub-agt.log", level=logging.DEBUG)
 
@@ -20,7 +20,7 @@ logging.basicConfig(filename="cocohub-agt.log", level=logging.DEBUG)
 async def fetch_component_config(component_id: str) -> Optional[dict]:
     async with httpx.AsyncClient() as http_client:
         rv = await http_client.get(
-            f"{CONFIG_SERVER}/api/fetch_component_config/{component_id}"
+            f"{COCOHUB_URL}/api/fetch_component_config/{component_id}"
         )
     resp_json: dict = rv.json()  # type: ignore
     return resp_json if "error" not in resp_json else None

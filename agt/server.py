@@ -25,8 +25,13 @@ class AgentSessionsManager:
 
     def session_cleanup_builder(self, bot, session_id):
         async def bot_coro(s):
-            res = await bot(s)
-            self.sessions.pop(session_id)
+            res = None
+            try:
+                res = await bot(s)
+            except Exception as e:
+                raise e
+            finally:
+                self.sessions.pop(session_id, None)
             return res
 
         return bot_coro
