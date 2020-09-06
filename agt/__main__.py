@@ -1,4 +1,4 @@
-from agt.shell import cli
+from agt.shell import shell_app
 
 if __name__ == "__main__":
-    cli()
+    shell_app()

@@ -24,13 +24,13 @@ setup(
     license="GPLv3",
     entry_points="""
         [console_scripts]
-        agt=agt.shell:cli
+        agt=agt.shell:shell_app
     """,
     install_requires=[
         "coco-sdk[async]>=0.0.8",
         "aioconsole",
         "pydantic",
-        "click",
+        "typer",
         "pyyaml",
     ],
     extras_require={

@@ -1,12 +1,19 @@
 import asyncio
+import typer
+import pathlib
+
+from typing import Optional
 
 import dotenv
-import click
 from aioconsole import ainput
 
 from .state import ConversationState
 
 dotenv.load_dotenv()
+
+shell_app = typer.Typer(
+    name="agt-shell-app", help="agt CLI, test and deploy your projects"
+)
 
 
 async def input_loop(s) -> None:
@@ -29,21 +36,14 @@ def bot_runner(bot, *args, **kwargs):
     loop.run_until_complete(bot_init(bot, *args, **kwargs))
 
 
-@click.group()
-def cli():
-    """
-        agt CLI, test and deploy your projects
-    """
-    pass
-
-
-@cli.command()
-@click.argument("component")
-def run(component):
+@shell_app.command()
+def run(
+    component: str = typer.Argument(
+        ..., help="example - module_a.module_b:agent_func_name"
+    )
+):
     """
         Run an Agent COMPONENT in the shell for testing
-
-        COMPONENT example - module_a.module_b:agent_func_name"
     """
     import importlib
     import sys
@@ -58,41 +58,37 @@ def run(component):
     bot_runner(entry)
 
 
-@cli.command()
-@click.option(
-    "--config",
-    default="component.yaml",
-    help="component yaml config",
-    type=click.Path(exists=True),
-)
-def deploy(config):
+@shell_app.command()
+def deploy(
+    config: pathlib.Path = typer.Option(
+        pathlib.Path("component.yaml"), help="component yaml configuration file path"
+    )
+):
     """
-        deploy an agent project to CoCoHub cloud
+        Deploy an agent project to CoCoHub cloud according to yaml configuration
     """
     from agt.deploy import deploy
 
-    asyncio.run(deploy(config))
+    asyncio.run(deploy(config, app_name=shell_app.info.name))
 
 
-@cli.command()
-@click.argument("component")
-@click.option(
-    "--component_id",
-    help="The component id under exchange /api/exchange/<component_id>",
-    type=click.STRING,
-)
-@click.option(
-    "--config",
-    help="Default config for the component e.g. module:TEMPLATE_DICT (when calling /api/config/<component_id>)",
-    type=click.STRING,
-)
-@click.option(
-    "--port", default=8080, help="Port to serve the component on", type=click.INT,
-)
-def serve(component, component_id, config, port):
+@shell_app.command()
+def serve(
+    component: str = typer.Argument(
+        ..., help="component to serve - format is module:agt_comp_name"
+    ),
+    component_id: Optional[str] = typer.Option(
+        None,
+        help="Component id on cocohub if different from the puppet component name (/api/exchange/<component_id>)",
+    ),
+    config: Optional[str] = typer.Option(
+        None,
+        help="Optional config for the component to publish on the hub (/api/config/<component_id>)",
+    ),
+    port: int = typer.Option(8080, help="port to serve the component on"),
+):
     """
     Serve on a local http server a component with cocohub exchange protocol
-    component format is module:agt_comp_name
     """
     import sys
     import importlib
