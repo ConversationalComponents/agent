@@ -9,9 +9,8 @@ import base64
 import secrets
 import asyncio
 import random
-import webbrowser
 
-import click
+import typer
 import httpx
 from pydantic import BaseModel, validator
 
@@ -24,7 +23,9 @@ COCOHUB_AUTHORIZE_SERVICE_ACCOUNT_URL = (
     "https://cocohub.ai/auth/confirm_service_account"
 )
 
-SERVICE_ACCOUNT_PATH = os.environ.get("AGT_SERVICE_ACCOUNT", "~/.agt_service_account")
+COCOHUB_SERVICE_ACCOUNT = os.environ.get(
+    "COCOHUB_SERVICE_ACCOUNT", "cocohub_service_account.json"
+)
 
 
 class ComponentYAML(BaseModel):
@@ -99,6 +100,7 @@ def generate_service_account(
         client_id=secrets.token_urlsafe(12),
         client_secret=secrets.token_urlsafe(24),
     )
+    service_account_path.parent.mkdir(exist_ok=True)
     with service_account_path.open("w") as f:
         json.dump(service_account.dict(), f, indent=True)
 
@@ -107,28 +109,30 @@ def generate_service_account(
             "utf-8"
         )
 
-    webbrowser.open(
+    typer.launch(
         COCOHUB_AUTHORIZE_SERVICE_ACCOUNT_URL
         + f"?serviceAccount={base64_service_account}"
     )
-    if not click.confirm("Are you done authenticating at CoCoHub?"):
+    if not typer.confirm("Are you done authenticating at CoCoHub?"):
         service_account_path.unlink()
         raise Exception("No service account. try again after authenticating at CoCoHub")
     return service_account
 
 
-async def get_access_token(http_client: httpx.AsyncClient) -> dict:
+async def get_access_token(http_client: httpx.AsyncClient, app_name: str) -> dict:
     """
         use service account to generate access token / generate service account if missing
     """
-    service_account_path = pathlib.Path(os.path.expanduser(SERVICE_ACCOUNT_PATH))
+    service_account_path = (
+        pathlib.Path(typer.get_app_dir(app_name)) / COCOHUB_SERVICE_ACCOUNT
+    )
     if service_account_path.exists():
         with service_account_path.open("r") as f:
             service_account: CoCoHubServiceAccount = CoCoHubServiceAccount.validate(
                 json.load(f)
             )
     else:
-        if click.confirm("No service account. do you want to generate one now?"):
+        if typer.confirm("No service account. do you want to generate one now?"):
             service_account = generate_service_account(service_account_path)
         else:
             raise Exception(
@@ -160,19 +164,19 @@ async def push_deployment(
     return http_response.json()
 
 
-async def deploy(project_config_path: str):
+async def deploy(project_config_path: str, app_name: str):
     """
         top level cli command to deploy a project
     """
     async with httpx.AsyncClient() as http_client:
         with tempfile.TemporaryDirectory() as tmpdir_p:
-            click.echo("Authenticating..")
-            access_token = await get_access_token(http_client)
+            typer.echo("Authenticating..")
+            access_token = await get_access_token(http_client, app_name)
 
             tmpdir = pathlib.Path(tmpdir_p)
             proj_conf = validate_project(project_config_path)
 
-            if click.confirm(
+            if typer.confirm(
                 f"Deploying {proj_conf.component_id}, Do you want to continue?"
             ):
 
