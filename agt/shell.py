@@ -79,7 +79,7 @@ def serve(
     ),
     component_id: Optional[str] = typer.Option(
         None,
-        help="Component id on cocohub if different from the puppet component name (/api/exchange/<component_id>)",
+        help="Component id on cocohub if different from the Agent component name (/api/exchange/<component_id>)",
     ),
     config: Optional[str] = typer.Option(
         None,

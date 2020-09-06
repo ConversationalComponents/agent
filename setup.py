@@ -20,7 +20,7 @@ setup(
     long_description_content_type="text/markdown",
     author="Chen Buskilla",
     author_email="chen@buskilla.com",
-    url="https://github.com/chenb67/puppet",
+    url="https://github.com/ConversationalComponents/agent",
     license="GPLv3",
     entry_points="""
         [console_scripts]
