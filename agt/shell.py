@@ -79,13 +79,15 @@ def serve(
     ),
     component_id: Optional[str] = typer.Option(
         None,
+        "--component_id",
+        "--component-id",
         help="Component id on cocohub if different from the Agent component name (/api/exchange/<component_id>)",
     ),
     config: Optional[str] = typer.Option(
         None,
         help="Optional config for the component to publish on the hub (/api/config/<component_id>)",
     ),
-    port: int = typer.Option(8080, help="port to serve the component on"),
+    port: int = typer.Option(8080, "--port", "-p", help="port to serve the component on"),
 ):
     """
     Serve on a local http server a component with cocohub exchange protocol
