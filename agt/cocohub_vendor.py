@@ -79,6 +79,7 @@ class AgentCoCoApp:
                 return json(
                     {"error": f"Blueprint: {blueprint_id} not found"}, status=400
                 )
+            config["component_id"] = blueprint_id
             blueprint_id = config["blueprint_id"]
 
             bp = self.blueprints[blueprint_id]
