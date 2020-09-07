@@ -3,6 +3,8 @@ import os
 import time
 import asyncio
 
+import traceback
+
 from typing import Optional
 
 import httpx
@@ -14,7 +16,8 @@ from agt.state import Outputs
 
 COCOHUB_URL = os.environ.get("COCOHUB_URL", "https://cocohub.ai")
 
-logging.basicConfig(filename="cocohub-agt.log", level=logging.DEBUG)
+logging.basicConfig(level=logging.DEBUG)
+logging.getLogger().addHandler(logging.FileHandler(filename="cocohub-agt.log"))
 
 
 async def fetch_component_config(component_id: str) -> Optional[dict]:
@@ -82,12 +85,17 @@ class AgentCoCoApp:
         else:
             bp = None
 
-        async def include_config_bp(*args, **kwargs):
+        async def wrapped_bp(*args, **kwargs):
             if config:
                 kwargs["config"] = config
-            return await bp(*args, **json_data.get("parameters", {}), **kwargs)
+            try:
+                return await bp(*args, **json_data.get("parameters", {}), **kwargs)
+            except Exception as e:
+                logging.exception(e)
+                error_message = traceback.format_exc()
+                return Outputs(success=False, error=e, error_detailed=error_message)
 
-        sc = self.agent_session_mgr.get_session(session_id, include_config_bp)
+        sc = self.agent_session_mgr.get_session(session_id, wrapped_bp)
 
         if "source_language_code" in json_data:
             sc.conv_state.memory["source_language_code"] = json_data[

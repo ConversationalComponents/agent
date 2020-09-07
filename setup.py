@@ -32,7 +32,7 @@ setup(
         "pydantic",
         "typer",
         "pyyaml",
-        "python-dotenv"
+        "python-dotenv",
     ],
     extras_require={
         "discord": ["discord.py"],
