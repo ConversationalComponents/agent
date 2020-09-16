@@ -1,4 +1,5 @@
 import os
+import platform
 import tempfile
 import pathlib
 import tarfile
@@ -96,7 +97,7 @@ def generate_service_account(
         generate service account and attach to the user profile on cocohub
     """
     service_account = CoCoHubServiceAccount(
-        name=os.uname().nodename,
+        name=platform.uname().node,
         client_id=secrets.token_urlsafe(12),
         client_secret=secrets.token_urlsafe(24),
     )
