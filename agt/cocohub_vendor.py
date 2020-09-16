@@ -93,8 +93,9 @@ class AgentCoCoApp:
                 return await bp(*args, **json_data.get("parameters", {}), **kwargs)
             except Exception as e:
                 logging.exception(e)
-                error_message = traceback.format_exc()
-                return Outputs(success=False, error=e, error_detailed=error_message)
+                return Outputs(
+                    success=False, error=traceback.format_exception_only(type(e), e)
+                )
 
         sc = self.agent_session_mgr.get_session(session_id, wrapped_bp)
 
