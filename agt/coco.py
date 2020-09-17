@@ -1,5 +1,16 @@
+from agt import ConversationState
 from agt.state import Outputs
 from coco.async_api import ComponentSession
+from coco.coco import CoCoResponse
+
+
+async def emit_responses(state: ConversationState, component_response: CoCoResponse):
+    if hasattr(component_response, "responses") and component_response.responses:
+        for resp in component_response.responses:
+            await state.say(text=resp.get("text"), image_url=resp.get("image"))
+        return
+    if component_response.response:
+        await state.say(component_response.response)
 
 
 async def coco(state, component_id, user_input=None, context={}, **params):
@@ -18,8 +29,7 @@ async def coco(state, component_id, user_input=None, context={}, **params):
     state.memory = {**state.memory, **component_response.updated_context}
 
     while not component_response.component_done:
-        if component_response.response:
-            await state.say(component_response.response)
+        await emit_responses(state, component_response)
 
         if component_response.out_of_context:
             await state.out_of_context(state.last_user_input())
@@ -33,8 +43,7 @@ async def coco(state, component_id, user_input=None, context={}, **params):
         )
         state.memory = {**state.memory, **component_response.updated_context}
 
-    if component_response.response:
-        await state.say(component_response.response)
+    await emit_responses(state, component_response)
 
     return Outputs(
         success=not component_response.component_failed, **component_response.outputs
