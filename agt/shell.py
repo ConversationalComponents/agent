@@ -30,12 +30,14 @@ async def console_output(text, *args, **kwargs):
 async def bot_init(bot, *args, **kwargs) -> None:
     s = ConversationState(console_output)
     s.memory["user_id"] = "shelluser"
+
     async def wrap_bot(bot, *args, **kwargs):
         try:
             return await bot(*args, **kwargs)
         except Exception as e:
             logging.exception(e)
             raise e
+
     await asyncio.gather(input_loop(s), wrap_bot(bot, s, *args, **kwargs))
 
 
