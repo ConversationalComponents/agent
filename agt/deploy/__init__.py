@@ -67,7 +67,7 @@ class CoCoHubServiceAccount(BaseModel):
 
 def validate_project(component_yaml_path: str):
     """
-        offline validation for project structure and configuraton
+    offline validation for project structure and configuraton
     """
     with open(component_yaml_path, "r") as f:
         project_config = ComponentYAML.validate(yaml.safe_load(f))
@@ -78,7 +78,7 @@ def package_project(
     tmpdir: pathlib.Path, component_yaml_path: str, component_id: str
 ) -> pathlib.Path:
     """
-        package project files to gzipped tar for upload
+    package project files to gzipped tar for upload
     """
     project_root = pathlib.Path(".")
     (project_root / "requirements.txt").touch()
@@ -94,7 +94,7 @@ def generate_service_account(
     service_account_path: pathlib.Path,
 ) -> CoCoHubServiceAccount:
     """
-        generate service account and attach to the user profile on cocohub
+    generate service account and attach to the user profile on cocohub
     """
     service_account = CoCoHubServiceAccount(
         name=platform.uname().node,
@@ -122,7 +122,7 @@ def generate_service_account(
 
 async def get_access_token(http_client: httpx.AsyncClient, app_name: str) -> dict:
     """
-        use service account to generate access token / generate service account if missing
+    use service account to generate access token / generate service account if missing
     """
     service_account_path = (
         pathlib.Path(typer.get_app_dir(app_name)) / COCOHUB_SERVICE_ACCOUNT
@@ -154,7 +154,7 @@ async def push_deployment(
     http_client: httpx.AsyncClient, project_tarfile: pathlib.Path, access_token: dict
 ) -> dict:
     """
-        push project tar to cocohub
+    push project tar to cocohub
     """
     files = {"file": project_tarfile.open("rb")}
     headers = {"Authorization": f"Bearer {access_token['access_token']}"}
@@ -167,7 +167,7 @@ async def push_deployment(
 
 async def deploy(project_config_path: str, app_name: str):
     """
-        top level cli command to deploy a project
+    top level cli command to deploy a project
     """
     async with httpx.AsyncClient() as http_client:
         with tempfile.TemporaryDirectory() as tmpdir_p:

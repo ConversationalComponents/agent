@@ -1,6 +1,6 @@
 import asyncio
 
-from .state import ConversationState
+from .state import ConversationState, OutOfContext
 
 
 class BotSessionContainer:
@@ -8,7 +8,19 @@ class BotSessionContainer:
         event_loop = asyncio.get_event_loop()
         self.responses = []
         self.conv_state = ConversationState(async_output_callback or self.add_response)
+        self.conv_state.set_out_of_context_handler(self.default_out_of_context_handler)
         self.bot_task: asyncio.Task = event_loop.create_task(bot_coro(self.conv_state))
+
+        self.out_of_context_event = asyncio.Event()
+        self.out_of_context_input_event = asyncio.Event()
+
+    async def default_out_of_context_handler(self, state, user_input=None):
+        self.out_of_context_event.set()
+        await self.out_of_context_input_event.wait()
+        self.out_of_context_input_event.clear()
+
+    async def wait_for_out_of_context(self):
+        await self.out_of_context_event.wait()
 
     async def add_response(self, text, *args, **kwargs):
         self.responses.append(text)

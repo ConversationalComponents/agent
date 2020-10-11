@@ -47,10 +47,8 @@ from typing import Optional
 
 class PatternElement(abc.ABC):
     """
-        Base class for element in pattern
+    Base class for element in pattern
     """
-
-    name = None
 
     def __init__(self, name=None) -> None:
         self.name = name
@@ -62,7 +60,7 @@ class PatternElement(abc.ABC):
 
 class RegexElement(PatternElement):
     """
-        element for any regex in a word position
+    element for any regex in a word position
     """
 
     def __init__(self, pattern, **kwargs):
@@ -75,7 +73,7 @@ class RegexElement(PatternElement):
 
 class WordsRegex(PatternElement):
     """
-        List of word regex patterns to match against a single word position
+    List of word regex patterns to match against a single word position
     """
 
     def __init__(self, *patterns, **kwargs):
@@ -88,7 +86,7 @@ class WordsRegex(PatternElement):
 
 class Words(WordsRegex):
     """
-        List of words to match against a single word position
+    List of words to match against a single word position
     """
 
     def __init__(self, *words, **kwargs):
@@ -98,7 +96,7 @@ class Words(WordsRegex):
 
 class AnyWords(PatternElement):
     """
-        Any word configurable with min, max
+    Any word configurable with min, max
     """
 
     def __init__(self, min="", max="", **kwargs):

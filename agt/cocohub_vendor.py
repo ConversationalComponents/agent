@@ -99,6 +99,9 @@ class AgentCoCoApp:
 
         sc = self.agent_session_mgr.get_session(session_id, wrapped_bp)
 
+        if len(sc.out_of_context_input_event._waiters) > 0:
+            sc.out_of_context_input_event.set()
+
         if "source_language_code" in json_data:
             sc.conv_state.memory["source_language_code"] = json_data[
                 "source_language_code"
@@ -109,7 +112,7 @@ class AgentCoCoApp:
         await sc.conv_state.put_user_input(json_data.get("user_input", ""))
 
         await asyncio.wait(
-            [sc.conv_state.bot_listen(), sc.bot_task],
+            [sc.conv_state.bot_listen(), sc.bot_task, sc.wait_for_out_of_context()],
             return_when=asyncio.FIRST_COMPLETED,
         )
 
@@ -124,10 +127,12 @@ class AgentCoCoApp:
             "response": sc.collect_responses(),
             "component_done": sc.bot_task.done(),
             "component_failed": sc.bot_task.done() and not outputs.success,
-            "out_of_context": False,
+            "out_of_context": sc.out_of_context_event.is_set(),
             "updated_context": sc.conv_state.memory,
             "outputs": outputs.outputs,
         }
+
+        sc.out_of_context_event.clear()
 
         eresp["response_time"] = time.perf_counter() - start_time
         return json(eresp)
