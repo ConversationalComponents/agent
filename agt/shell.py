@@ -1,6 +1,7 @@
 import asyncio
 import typer
 import pathlib
+import json
 
 from typing import Optional
 
@@ -40,10 +41,13 @@ def bot_runner(bot, *args, **kwargs):
 def run(
     component: str = typer.Argument(
         ..., help="example - module_a.module_b:agent_func_name"
-    )
+    ),
+    config: pathlib.Path = typer.Option(
+        None, help="A config json file to test with a config"
+    ),
 ):
     """
-        Run an Agent COMPONENT in the shell for testing
+    Run an Agent COMPONENT in the shell for testing
     """
     import importlib
     import sys
@@ -55,7 +59,12 @@ def run(
     entry_package = importlib.import_module(entry_package_name)
     entry = getattr(entry_package, entry_name)
 
-    bot_runner(entry)
+    config_data = None
+    if config:
+        with open(config, "r") as f:
+            config_data = json.load(f)
+
+    bot_runner(entry, config=config_data)
 
 
 @shell_app.command()
@@ -65,7 +74,7 @@ def deploy(
     )
 ):
     """
-        Deploy an agent project to CoCoHub cloud according to yaml configuration
+    Deploy an agent project to CoCoHub cloud according to yaml configuration
     """
     from agt.deploy import deploy
 
