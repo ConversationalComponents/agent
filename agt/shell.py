@@ -72,8 +72,9 @@ def run(
     if config:
         with open(config, "r") as f:
             config_data = json.load(f)
-
-    bot_runner(entry, config=config_data)
+        bot_runner(entry, config=config_data)
+    else:
+        bot_runner(entry)
 
 
 @shell_app.command()
@@ -85,9 +86,9 @@ def deploy(
     """
     Deploy an agent project to CoCoHub cloud according to yaml configuration
     """
-    from agt.deploy import deploy
+    from agt.deploy import deploy as agt_deploy
 
-    asyncio.run(deploy(config, app_name=shell_app.info.name))
+    asyncio.run(agt_deploy(str(config), app_name=shell_app.info.name or "agt"))
 
 
 @shell_app.command()
