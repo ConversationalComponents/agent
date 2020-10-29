@@ -1,11 +1,13 @@
 import logging
 import os
 import time
+import copy
 import asyncio
 
 import traceback
 
 from typing import Optional
+from lxml.etree import XMLSyntaxError
 
 import httpx
 from sanic import Sanic
@@ -13,6 +15,8 @@ from sanic.response import json
 
 from agt.server import AgentSessionsManager
 from agt.state import Outputs
+
+from agt.ccml import ccml
 
 COCOHUB_URL = os.environ.get("COCOHUB_URL", "https://cocohub.ai")
 
@@ -122,9 +126,21 @@ class AgentCoCoApp:
             if result:
                 outputs = result
 
+        responses = copy.copy(sc.responses)
+        ssml = sc.collect_responses()
+
+        try:
+            response = ccml.parse.clear_xml_tags(text=ssml)
+            responses = map(ccml.parse.clear_xml_tags, responses)
+        except XMLSyntaxError as err:
+            response = ssml
+            logging.error("Failed removing xml tags from response: {}")
+            logging.exception(err)
+
         eresp = {
-            "responses": [{"text": r} for r in sc.responses],
-            "response": sc.collect_responses(),
+            "responses": [{"text": r} for r in responses],
+            "response": response,
+            "ssml": ssml,
             "component_done": sc.bot_task.done(),
             "component_failed": sc.bot_task.done() and not outputs.success,
             "out_of_context": sc.out_of_context_event.is_set(),

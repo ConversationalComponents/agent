@@ -1,0 +1,4 @@
+[submodule "agt/ccml"]
+	path = agt/ccml
+	url = https://github.com/ConversationalComponents/ccml.git
+	branch = master

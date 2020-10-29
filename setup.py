@@ -33,6 +33,7 @@ setup(
         "typer",
         "pyyaml",
         "python-dotenv",
+        "lxml",
     ],
     extras_require={
         "discord": ["discord.py"],
