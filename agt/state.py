@@ -5,7 +5,16 @@ import uuid
 
 from asyncio import Queue, Event
 
+from pydantic import BaseModel
+
+
 logger = logging.getLogger("agt")
+
+
+class Message(BaseModel):
+    text: str
+    image_url: ta.Optional[str] = None
+    ssml: ta.Optional[str] = ""
 
 
 def generate_session_id():
@@ -44,7 +53,7 @@ class ConversationState:
 
         self.memory = {}
 
-    async def say(self, text: str, image_url: str = None):
+    async def say(self, message: Message):
         """Utter text message
 
         Arguments:
@@ -54,7 +63,7 @@ class ConversationState:
         if image_url:
             logger.debug(f"BOT:{self.session_id}: {image_url}")
         self.log.append(BotEntry(text, image_url))
-        await self.output_callback(text, image_url)
+        await self.output_callback(message)
 
     async def put_user_input(self, user_input: str):
         if not self._inputs_queue:

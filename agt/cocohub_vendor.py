@@ -11,6 +11,8 @@ import httpx
 from sanic import Sanic
 from sanic.response import json
 
+import ccml
+
 from agt.server import AgentSessionsManager
 from agt.state import Outputs
 
@@ -123,8 +125,10 @@ class AgentCoCoApp:
                 outputs = result
 
         eresp = {
-            "responses": [{"text": r} for r in sc.responses],
-            "response": sc.collect_responses(),
+            "responses": [
+                {"text": r.text, "image_url": r.image_url, "ssml": r.ssml}
+                for r in sc.responses
+            ],
             "component_done": sc.bot_task.done(),
             "component_failed": sc.bot_task.done() and not outputs.success,
             "out_of_context": sc.out_of_context_event.is_set(),
