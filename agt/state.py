@@ -54,7 +54,9 @@ class ConversationState:
 
         self.memory = {}
 
-    async def say(self, text: str, image_url: str = None, ssml: str = ""):
+    async def say(
+        self, text: str, image_url: Optional[str] = None, ssml: Optional[str] = None
+    ):
         """Utter text message
 
         Arguments:
