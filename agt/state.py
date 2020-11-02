@@ -65,9 +65,9 @@ class ConversationState:
         if image_url:
             logger.debug(f"BOT:{self.session_id}: {image_url}")
 
-        self.log.append(BotEntry(text, image_url, ssml))
+        self.log.append(BotEntry(text=text, image_url=image_url, ssml=ssml))
 
-        await self.output_callback(text=text, image_url=image_url, ssml=ssml)
+        await self.output_callback(Message(text=text, image_url=image_url, ssml=ssml))
 
     async def put_user_input(self, user_input: str):
         if not self._inputs_queue:

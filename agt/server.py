@@ -22,14 +22,8 @@ class BotSessionContainer:
     async def wait_for_out_of_context(self):
         await self.out_of_context_event.wait()
 
-    async def add_response(self, text, *args, **kwargs):
-        self.responses.append(
-            Message(
-                text=text,
-                image_url=kwargs.get("image_url"),
-                ssml=kwargs.get("ssml") or "",
-            )
-        )
+    async def add_response(self, message: Message, *args, **kwargs):
+        self.responses.append(message)
 
     def collect_responses(self):
         response = " ".join(self.responses)

@@ -7,7 +7,11 @@ from coco.coco import CoCoResponse
 async def emit_responses(state: ConversationState, component_response: CoCoResponse):
     if hasattr(component_response, "responses") and component_response.responses:
         for resp in component_response.responses:
-            await state.say(text=resp.get("text"), image_url=resp.get("image"))
+            await state.say(
+                text=resp.get("text"),
+                image_url=resp.get("image"),
+                ssml=resp.get("ssml") or "",
+            )
         return
     if component_response.response:
         await state.say(component_response.response)
