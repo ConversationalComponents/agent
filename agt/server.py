@@ -1,6 +1,6 @@
 import asyncio
 
-from .state import ConversationState, OutOfContext
+from .state import ConversationState, OutOfContext, Message
 
 
 class BotSessionContainer:
@@ -23,7 +23,13 @@ class BotSessionContainer:
         await self.out_of_context_event.wait()
 
     async def add_response(self, text, *args, **kwargs):
-        self.responses.append(text)
+        self.responses.append(
+            Message(
+                text=text,
+                image_url=kwargs.get("image_url"),
+                ssml=kwargs.get("ssml") or "",
+            )
+        )
 
     def collect_responses(self):
         response = " ".join(self.responses)

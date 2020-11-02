@@ -22,9 +22,10 @@ def generate_session_id():
 
 
 class Entry:
-    def __init__(self, text: str = None, image_url: str = None):
+    def __init__(self, text: str = None, image_url: str = None, ssml: str = ""):
         self.text = text
         self.image_url = image_url
+        self.ssml = ssml
 
     def __repr__(self):
         if self.image_url:
@@ -53,17 +54,20 @@ class ConversationState:
 
         self.memory = {}
 
-    async def say(self, message: Message):
+    async def say(self, text: str, image_url: str = None, ssml: str = ""):
         """Utter text message
 
         Arguments:
             text {str} -- The text message
         """
         logger.debug(f"BOT:{self.session_id}: {text}")
+
         if image_url:
             logger.debug(f"BOT:{self.session_id}: {image_url}")
-        self.log.append(BotEntry(text, image_url))
-        await self.output_callback(message)
+
+        self.log.append(BotEntry(text, image_url, ssml))
+
+        await self.output_callback(text=text, image_url=image_url, ssml=ssml)
 
     async def put_user_input(self, user_input: str):
         if not self._inputs_queue:
