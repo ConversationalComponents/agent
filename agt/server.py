@@ -30,6 +30,9 @@ class BotSessionContainer:
         self.responses = []
         return response
 
+    def clear_responses(self):
+        self.responses = []
+
 
 class AgentSessionsManager:
     def __init__(self):

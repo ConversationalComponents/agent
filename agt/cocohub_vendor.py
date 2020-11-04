@@ -134,6 +134,7 @@ class AgentCoCoApp:
             "outputs": outputs.outputs,
         }
 
+        sc.clear_responses()
         sc.out_of_context_event.clear()
 
         eresp["response_time"] = time.perf_counter() - start_time

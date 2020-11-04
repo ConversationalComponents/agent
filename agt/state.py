@@ -22,7 +22,12 @@ def generate_session_id():
 
 
 class Entry:
-    def __init__(self, text: str = None, image_url: ta.Optional[str] = None, ssml: ta.Optional[str] = None):
+    def __init__(
+        self,
+        text: str = None,
+        image_url: ta.Optional[str] = None,
+        ssml: ta.Optional[str] = None,
+    ):
         self.text = text
         self.image_url = image_url
         self.ssml = ssml
@@ -55,7 +60,10 @@ class ConversationState:
         self.memory = {}
 
     async def say(
-        self, text: str, image_url: ta.Optional[str] = None, ssml: ta.Optional[str] = None
+        self,
+        text: str,
+        image_url: ta.Optional[str] = None,
+        ssml: ta.Optional[str] = None,
     ):
         """Utter text message
 
