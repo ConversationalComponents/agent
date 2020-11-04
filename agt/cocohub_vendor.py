@@ -123,8 +123,10 @@ class AgentCoCoApp:
                 outputs = result
 
         eresp = {
-            "responses": [{"text": r} for r in sc.responses],
-            "response": sc.collect_responses(),
+            "responses": [
+                {"text": r.text, "image_url": r.image_url, "ssml": r.ssml}
+                for r in sc.responses
+            ],
             "component_done": sc.bot_task.done(),
             "component_failed": sc.bot_task.done() and not outputs.success,
             "out_of_context": sc.out_of_context_event.is_set(),
@@ -132,6 +134,7 @@ class AgentCoCoApp:
             "outputs": outputs.outputs,
         }
 
+        sc.clear_responses()
         sc.out_of_context_event.clear()
 
         eresp["response_time"] = time.perf_counter() - start_time

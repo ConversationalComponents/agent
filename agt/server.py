@@ -1,6 +1,6 @@
 import asyncio
 
-from .state import ConversationState, OutOfContext
+from .state import ConversationState, OutOfContext, Message
 
 
 class BotSessionContainer:
@@ -22,13 +22,16 @@ class BotSessionContainer:
     async def wait_for_out_of_context(self):
         await self.out_of_context_event.wait()
 
-    async def add_response(self, text, *args, **kwargs):
-        self.responses.append(text)
+    async def add_response(self, message: Message, *args, **kwargs):
+        self.responses.append(message)
 
     def collect_responses(self):
         response = " ".join(self.responses)
         self.responses = []
         return response
+
+    def clear_responses(self):
+        self.responses = []
 
 
 class AgentSessionsManager:

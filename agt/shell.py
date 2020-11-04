@@ -9,7 +9,7 @@ from typing import Optional
 import dotenv
 from aioconsole import ainput
 
-from .state import ConversationState
+from .state import ConversationState, Message
 
 dotenv.load_dotenv()
 
@@ -23,8 +23,8 @@ async def input_loop(s) -> None:
         await s.put_user_input(await ainput())
 
 
-async def console_output(text, *args, **kwargs):
-    print(f"Bot: {text}")
+async def console_output(message: Message, *args, **kwargs):
+    print(f"Bot: {message.text}")
 
 
 async def bot_init(bot, *args, **kwargs) -> None:

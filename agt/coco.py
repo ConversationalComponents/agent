@@ -7,13 +7,19 @@ from coco.coco import CoCoResponse
 async def emit_responses(state: ConversationState, component_response: CoCoResponse):
     if hasattr(component_response, "responses") and component_response.responses:
         for resp in component_response.responses:
-            await state.say(text=resp.get("text"), image_url=resp.get("image"))
+            await state.say(
+                text=resp.get("text"),
+                image_url=resp.get("image"),
+                ssml=resp.get("ssml"),
+            )
         return
     if component_response.response:
         await state.say(component_response.response)
 
 
-async def coco(state, component_id, user_input=None, context={}, **params):
+async def coco(
+    state, component_id, user_input=None, context={}, params={}, **extra_params
+):
     component_session = ComponentSession(component_id, state.session_id)
 
     if not user_input:
@@ -22,7 +28,7 @@ async def coco(state, component_id, user_input=None, context={}, **params):
     component_response = await component_session(
         user_input,
         context=context,
-        parameters=params,
+        parameters={**extra_params, **params},
         flatten_context=True,
         source_language_code=state.memory.get("source_language_code"),
     )
@@ -37,7 +43,7 @@ async def coco(state, component_id, user_input=None, context={}, **params):
         component_response = await component_session(
             user_input,
             context=context,
-            parameters=params,
+            parameters={**extra_params, **params},
             flatten_context=True,
             source_language_code=state.memory.get("source_language_code"),
         )
