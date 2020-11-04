@@ -13,8 +13,8 @@ logger = logging.getLogger("agt")
 
 class Message(BaseModel):
     text: str
-    image_url: ta.Optional[str] = None
-    ssml: ta.Optional[str] = ""
+    image_url: ta.Optional[str]
+    ssml: ta.Optional[str]
 
 
 def generate_session_id():

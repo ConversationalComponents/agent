@@ -10,7 +10,7 @@ async def emit_responses(state: ConversationState, component_response: CoCoRespo
             await state.say(
                 text=resp.get("text"),
                 image_url=resp.get("image"),
-                ssml=resp.get("ssml") or "",
+                ssml=resp.get("ssml"),
             )
         return
     if component_response.response:
