@@ -1,4 +1,4 @@
-[![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/ConversationalComponents/puppet)
+[![Discord](https://img.shields.io/discord/679608291931717672)](https://discord.gg/8NCdM3X)
 
 # Agent (agt)
 Agent is a high-level toolkit for building chatbots using conversational components.
