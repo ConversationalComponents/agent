@@ -6,12 +6,12 @@ import logging
 
 from typing import Optional
 
-import dotenv
+from dotenv import load_dotenv, find_dotenv
 from aioconsole import ainput
 
 from .state import ConversationState, Message
 
-dotenv.load_dotenv()
+load_dotenv(find_dotenv(usecwd=True))
 
 shell_app = typer.Typer(
     name="agt-shell-app", help="agt CLI, test and deploy your projects"
