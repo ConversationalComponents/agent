@@ -122,7 +122,7 @@ class Pattern:
 
     """
 
-    def __init__(self, *elements: ta.Union[PatternElement, str, tuple]):
+    def __init__(self, *elements: ta.Union[PatternElement, str, tuple, list, set]):
         elements_normalized = []
         for e in elements:
             if isinstance(e, PatternElement):

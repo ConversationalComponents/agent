@@ -1,3 +1,4 @@
+from typing import Callable, Dict
 from agt import ConversationState
 from agt.state import Outputs
 from coco.async_api import ComponentSession
@@ -54,3 +55,18 @@ async def coco(
     return Outputs(
         success=not component_response.component_failed, **component_response.outputs
     )
+
+
+from .std import oneturn
+
+LOCAL_COMPS: Dict[str, Callable] = {
+    "oneturn_say_v2": oneturn.oneturn_say_v2,
+    "navigation": oneturn.navigation,
+}
+
+
+async def coco_with_local(state, component_id, *args, **kwargs):
+    if component_id in LOCAL_COMPS:
+        return await LOCAL_COMPS[component_id](state, *args, **kwargs)
+    else:
+        return await coco(state, component_id, *args, **kwargs)
