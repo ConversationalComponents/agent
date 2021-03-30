@@ -15,11 +15,11 @@ from coco.config_models import ActionsConfig, BlueprintConfig
 
 available_intents = {
     "yes": Intent(
-        Pattern(WILDCARD, ("yes", "yea", "yup", "sure", "ok", "of course"), WILDCARD),
-        Pattern("y"),
+        Pattern(WILDCARD, ("yes", "yea", "yup", "sure", "ok", "of course", "yeah", "okay", "yep",  "I do"), WILDCARD),
+        Pattern(("y", "totally", "naturally", "k")),
     ),
     "no": Intent(
-        Pattern(WILDCARD, ("no", "nope", "never", "no way", "nah"), WILDCARD),
+        Pattern(WILDCARD, ("no", "nope", "never", "no way", "nah", "neh", "nay", "nop", "noo", "nooo"), WILDCARD),
         Pattern("n"),
     ),
     "continue": Intent(
