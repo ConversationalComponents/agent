@@ -20,11 +20,10 @@ logging.basicConfig(level=logging.DEBUG)
 logging.getLogger().addHandler(logging.FileHandler(filename="cocohub-agt.log"))
 
 
-async def fetch_component_config(component_id: str) -> Optional[dict]:
-    async with httpx.AsyncClient() as http_client:
-        rv = await http_client.get(
-            f"{COCOHUB_URL}/api/fetch_component_config/{component_id}"
-        )
+async def fetch_component_config(http_client: httpx.AsyncClient, component_id: str) -> Optional[dict]:
+    rv = await http_client.get(
+        f"{COCOHUB_URL}/api/fetch_component_config/{component_id}"
+    )
     resp_json: dict = rv.json()  # type: ignore
     return resp_json if "error" not in resp_json else None
 
@@ -35,6 +34,7 @@ class AgentCoCoApp:
         self.blueprints_configs: dict = {}
         self.sanic_app = Sanic(__name__)
         self.agent_session_mgr = AgentSessionsManager()
+        self.http_client = httpx.AsyncClient()
         self.sanic_app.add_route(
             self.exchange, "/api/exchange/<blueprint_id>/<session_id>", methods=["POST"]
         )
@@ -74,7 +74,7 @@ class AgentCoCoApp:
         if blueprint_id in self.blueprints:
             bp = self.blueprints[blueprint_id]
         elif session_id not in self.agent_session_mgr.sessions:
-            config = await fetch_component_config(blueprint_id)
+            config = await fetch_component_config(self.http_client, blueprint_id)
             if not config:
                 return json(
                     {"error": f"Blueprint: {blueprint_id} not found"}, status=400
