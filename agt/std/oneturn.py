@@ -166,13 +166,18 @@ class Branch(BaseModel):
 async def navigation(
     state: ConversationState, user_input=None, branches: List[Branch] = [], **kwargs
 ):
+    results = []
     user_input = user_input or await state.user_input()
     for branch in branches:
+        intent_result = False
         b = Branch.validate(branch)
-        if b.intent_name and available_intents[b.intent_name.name](user_input):
-            return Outputs(control=b.branch_id)
+        if b.intent_name:
+            intent_result = available_intents[b.intent_name.name](user_input) if  b.intent_name.name in available_intents else None
         if b.keywords and Intent(
             Pattern(WILDCARD, clean_keywords(b.keywords), WILDCARD)
         )(user_input):
-            return Outputs(control=b.branch_id)
+            intent_result = True
+        results.append({"branch_id": b.branch_id, "result": intent_result})
+        
+        # return Outputs(control=b.branch_id)
     await state.out_of_context(user_input)
