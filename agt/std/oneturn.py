@@ -159,7 +159,7 @@ async def example(state):
 
 class Branch(BaseModel):
     branch_id: str
-    intent_name: Optional[AvailableIntents]
+    intent_name: Optional[str]
     keywords: Optional[List[str]]
 
 
