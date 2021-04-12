@@ -202,8 +202,8 @@ async def navigation(
 
     classic_intent_names = list(
         map(
-            lambda b: b.intent_name,
-            filter(lambda b: b not in available_intents, branches),
+            lambda b: b.get("intent_name"),
+            filter(lambda b: "intent_name" in b and b["intent_name"]not in available_intents, branches),
         )
     )
 
