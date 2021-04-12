@@ -200,14 +200,18 @@ async def navigation(
 ):
     user_input = user_input or await state.user_input()
 
-    classic_intent_names = [b.intent_name.name for b in list(map(lambda x: (x.intent_name.name and x.intent_name.name in available_intents), branches))]  # type: ignore
+    classic_intent_names = list(
+        map(
+            lambda b: b.intent_name,
+            filter(lambda b: b not in available_intents, branches),
+        )
+    )
 
     classic_intents_results = await coco_sdk.query_intents(
         intent_names=classic_intent_names, query=user_input
     )
-    classic_intents_map = {}
-    for r in classic_intents_results:
-        classic_intents_map.update({r.name: r.result})
+
+    classic_intents_map = {r.name: r.result for r in classic_intents_results}
 
     for branch in branches:
         b = Branch.validate(branch)
