@@ -5,7 +5,7 @@ import random
 
 from pydantic import BaseModel
 
-from coco import ccml
+from coco import ccml, coco
 
 import agt
 from agt.state import OutOfContext, Outputs, ConversationState
@@ -15,11 +15,41 @@ from coco.config_models import ActionsConfig, BlueprintConfig
 
 available_intents = {
     "yes": Intent(
-        Pattern(WILDCARD, ("yes", "yea", "yup", "sure", "ok", "of course", "yeah", "okay", "yep",  "I do"), WILDCARD),
+        Pattern(
+            WILDCARD,
+            (
+                "yes",
+                "yea",
+                "yup",
+                "sure",
+                "ok",
+                "of course",
+                "yeah",
+                "okay",
+                "yep",
+                "I do",
+            ),
+            WILDCARD,
+        ),
         Pattern(("y", "totally", "naturally", "k")),
     ),
     "no": Intent(
-        Pattern(WILDCARD, ("no", "nope", "never", "no way", "nah", "neh", "nay", "nop", "noo", "nooo"), WILDCARD),
+        Pattern(
+            WILDCARD,
+            (
+                "no",
+                "nope",
+                "never",
+                "no way",
+                "nah",
+                "neh",
+                "nay",
+                "nop",
+                "noo",
+                "nooo",
+            ),
+            WILDCARD,
+        ),
         Pattern("n"),
     ),
     "continue": Intent(
@@ -167,17 +197,48 @@ async def navigation(
     state: ConversationState, user_input=None, branches: List[Branch] = [], **kwargs
 ):
     results = []
+    classic_intents_meta = {}
     user_input = user_input or await state.user_input()
-    for branch in branches:
+
+    # Excecute intents and collect classic intents.
+    for index, branch in enumerate(branches):
         intent_result = False
+
         b = Branch.validate(branch)
         if b.intent_name:
-            intent_result = available_intents[b.intent_name.name](user_input) if  b.intent_name.name in available_intents else None
+            if b.intent_name.name in available_intents:
+                intent_result = available_intents[b.intent_name.name](user_input)
+            else:
+                classic_intents_meta.update(
+                    {
+                        b.intent_name.name: {
+                            "branch_index": index,
+                            "branch_id": b.branch_id,
+                        }
+                    }
+                )
         if b.keywords and Intent(
             Pattern(WILDCARD, clean_keywords(b.keywords), WILDCARD)
         )(user_input):
             intent_result = True
+
         results.append({"branch_id": b.branch_id, "result": intent_result})
-        
-        # return Outputs(control=b.branch_id)
+
+    intents_response = coco.query_intents(
+        intent_names=classic_intents_meta.keys(), query=user_input
+    )
+
+    # Place classic intents result at the right sequence at the results array.
+    for intent_res in intents_response:
+        intent_meta = classic_intents_meta[intent_res.name]
+        results[intent_meta["branch_index"]] = {
+            "branch_id": intent_meta["branch_id"],
+            "result": intent_res.result,
+        }
+
+    # Go over results:
+    for r in results:
+        if r["result"]:
+            return Outputs(control=r["branch_id"])
+
     await state.out_of_context(user_input)
