@@ -5,7 +5,8 @@ import random
 
 from pydantic import BaseModel
 
-from coco import ccml, coco
+import coco.async_api as coco_sdk
+from coco import ccml
 
 import agt
 from agt.state import OutOfContext, Outputs, ConversationState
@@ -224,7 +225,7 @@ async def navigation(
 
         results.append({"branch_id": b.branch_id, "result": intent_result})
 
-    intents_response = coco.query_intents(
+    intents_response = await coco_sdk.query_intents(
         intent_names=classic_intents_meta.keys(), query=user_input
     )
 
