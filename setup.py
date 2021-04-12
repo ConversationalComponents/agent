@@ -27,7 +27,7 @@ setup(
         agt=agt.shell:shell_app
     """,
     install_requires=[
-        "coco-sdk[async]>=0.1.3",
+        "coco-sdk[async]>=0.1.11",
         "aioconsole",
         "pydantic",
         "typer",
