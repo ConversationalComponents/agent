@@ -5,6 +5,8 @@ import random
 
 from pydantic import BaseModel
 
+
+import coco.async_api as coco_sdk
 from coco import ccml
 
 import agt
@@ -15,11 +17,41 @@ from coco.config_models import ActionsConfig, BlueprintConfig
 
 available_intents = {
     "yes": Intent(
-        Pattern(WILDCARD, ("yes", "yea", "yup", "sure", "ok", "of course", "yeah", "okay", "yep",  "I do"), WILDCARD),
+        Pattern(
+            WILDCARD,
+            (
+                "yes",
+                "yea",
+                "yup",
+                "sure",
+                "ok",
+                "of course",
+                "yeah",
+                "okay",
+                "yep",
+                "I do",
+            ),
+            WILDCARD,
+        ),
         Pattern(("y", "totally", "naturally", "k")),
     ),
     "no": Intent(
-        Pattern(WILDCARD, ("no", "nope", "never", "no way", "nah", "neh", "nay", "nop", "noo", "nooo"), WILDCARD),
+        Pattern(
+            WILDCARD,
+            (
+                "no",
+                "nope",
+                "never",
+                "no way",
+                "nah",
+                "neh",
+                "nay",
+                "nop",
+                "noo",
+                "nooo",
+            ),
+            WILDCARD,
+        ),
         Pattern("n"),
     ),
     "continue": Intent(
@@ -159,7 +191,7 @@ async def example(state):
 
 class Branch(BaseModel):
     branch_id: str
-    intent_name: Optional[AvailableIntents]
+    intent_name: Optional[str]
     keywords: Optional[List[str]]
 
 
@@ -167,12 +199,29 @@ async def navigation(
     state: ConversationState, user_input=None, branches: List[Branch] = [], **kwargs
 ):
     user_input = user_input or await state.user_input()
+
+    classic_intent_names = [b.intent_name.name for b in list(map(lambda x: (x.intent_name.name and x.intent_name.name in available_intents), branches))]  # type: ignore
+
+    classic_intents_results = await coco_sdk.query_intents(
+        intent_names=classic_intent_names, query=user_input
+    )
+    classic_intents_map = {}
+    for r in classic_intents_results:
+        classic_intents_map.update({r.name: r.result})
+
     for branch in branches:
         b = Branch.validate(branch)
-        if b.intent_name and available_intents[b.intent_name.name](user_input):
+        if (
+            b.intent_name
+            and b.intent_name in available_intents
+            and available_intents[b.intent_name.name](user_input)
+        ):
+            return Outputs(control=b.branch_id)
+        elif b.intent_name and classic_intents_map.get(b.intent_name):
             return Outputs(control=b.branch_id)
         if b.keywords and Intent(
             Pattern(WILDCARD, clean_keywords(b.keywords), WILDCARD)
         )(user_input):
             return Outputs(control=b.branch_id)
+
     await state.out_of_context(user_input)
