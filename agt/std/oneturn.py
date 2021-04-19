@@ -218,7 +218,7 @@ async def navigation(
         if (
             b.intent_name
             and b.intent_name in available_intents
-            and available_intents[b.intent_name.name](user_input)
+            and available_intents[b.intent_name](user_input)
         ):
             return Outputs(control=b.branch_id)
         elif b.intent_name and classic_intents_map.get(b.intent_name):
