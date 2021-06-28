@@ -139,19 +139,44 @@ async def get_access_token(http_client: httpx.AsyncClient, app_name: str) -> dic
             raise Exception(
                 "No service account. try again after authenticating at CoCoHub"
             )
-
-    http_response = await http_client.post(
-        COCOHUB_TOKEN_URL,
-        auth=(service_account.client_id, service_account.client_secret),
-        headers={"content-length": "0"},
-    )
-    http_response.raise_for_status()
-    access_token = http_response.json()
-    return access_token
+    try:
+        http_response = await http_client.post(
+            COCOHUB_TOKEN_URL,
+            auth=(service_account.client_id, service_account.client_secret),
+            headers={"content-length": "0"},
+        )
+        http_response.raise_for_status()
+        access_token = http_response.json()
+        return access_token
+    except httpx.exceptions.HTTPError as err:
+        if err.response.status_code == 401:
+            if typer.confirm(
+                "\n Service account expired. do you want to generate a new one now?"
+            ):
+                service_account_path = (
+                    pathlib.Path(typer.get_app_dir(app_name)) / COCOHUB_SERVICE_ACCOUNT
+                )
+                os.remove(service_account_path)
+                service_account = generate_service_account(service_account_path)
+                http_response = await http_client.post(
+                    COCOHUB_TOKEN_URL,
+                    auth=(service_account.client_id, service_account.client_secret),
+                    headers={"content-length": "0"},
+                )
+                http_response.raise_for_status()
+                access_token = http_response.json()
+                return access_token
+            else:
+                raise Exception(
+                    "No service account. try again after authenticating at CoCoHub"
+                )
 
 
 async def push_deployment(
-    http_client: httpx.AsyncClient, project_tarfile: pathlib.Path, access_token: dict
+    http_client: httpx.AsyncClient,
+    project_tarfile: pathlib.Path,
+    access_token: dict,
+    app_name: str,
 ) -> dict:
     """
     push project tar to cocohub
@@ -185,7 +210,9 @@ async def deploy(project_config_path: str, app_name: str):
                     tmpdir, project_config_path, proj_conf.component_id
                 )
                 deploy_task = asyncio.create_task(
-                    push_deployment(http_client, tarfile, access_token)
+                    push_deployment(
+                        http_client, tarfile, access_token, app_name=app_name
+                    )
                 )
                 print()
                 random_signs = ["⭐️", "💫", "🌟", "✨", "⚡️"]
