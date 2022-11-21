@@ -1,5 +1,7 @@
 [![Discord](https://img.shields.io/discord/679608291931717672)](https://discord.gg/8NCdM3X)
 
+Dev channel on discord - https://www.scrollsbot.com/discord/679608291931717672/689202767046115426/latest
+
 # Agent (agt)
 Agent is a high-level toolkit for building chatbots using conversational components.
 Try Agent if you want to make your chatbot modular using composable components.
